@@ -18,15 +18,15 @@ coverage](https://codecov.io/gh/endomer/enftr/branch/main/graph/badge.svg)](http
 status](https://www.r-pkg.org/badges/version/enftr)](https://CRAN.R-project.org/package=enftr)
 <!-- badges: end -->
 
-enftr es una interfaz para trabajar con la base de datos de la Encuesta
-Nacional (tradicional) de Fuerza de Trabajo (ENFT) en R. Este paquete es
-parte de [endomer](https://endomer.github.io/) un proyecto de código
-abierto que busca ofrecer interfaces en R para las principales encuestas
-de la República Dominicana.
+`enftr` es una interfaz para trabajar con la base de datos de la
+Encuesta Nacional (tradicional) de Fuerza de Trabajo (ENFT) en R. Este
+paquete es parte de [endomer](https://endomer.github.io/) un proyecto de
+código abierto que busca ofrecer interfaces en R para las principales
+encuestas de la República Dominicana.
 
 ## Instalación
 
-enftr aun no está en CRAN.
+`enftr` aun no está en CRAN.
 
 <!-- You can install the released version of encftr from [CRAN](https://CRAN.R-project.org) with: -->
 <!-- ``` r -->
@@ -50,8 +50,6 @@ remotes::install_github("endomer/enftr")
 
 1.  Completar el diccionario.
 
-<!--html_preserve-->
-
 <div style="display:inline-block;
              vertical-align:baseline;
              width:100%;
@@ -71,15 +69,12 @@ color: #fff;
 text-align: center;
 box-shadow: inset 0 -1px 0 rgb(0 0 0 / 15%);
 transition: width .6s ease;
-background-color: #d9534f;  width: 3.9%;">
+background-color: #d9534f;  width: 11%;">
 
-3.9%
-
-</div>
+  11%
 
 </div>
-
-<!--/html_preserve-->
+  </div>
 
 2.  Agregar una función para calcular la pobreza monetaria.
 3.  Agregar una función para el cálculo del ICV.
@@ -103,8 +98,6 @@ contribuyente](https://contributor-covenant.org/es/version/2/0/CODE_OF_CONDUCT.h
 Contribuyendo con el proyecto aceptas las términos y condiciones.
 
 <hr/>
-<!--html_preserve-->
-
 <a href="./articles/enftr.html"><button type="button"
 style = "
     border: 1px solid transparent;
@@ -120,5 +113,5 @@ style = "
     font-weight: 900;
     text-align: center;
     white-space: nowrap;
-    vertical-align: middle;"> Guía de inicio
-rápido</button></a><!--/html_preserve-->
+    vertical-align: middle;">
+    Guía de inicio rápido</button></a>

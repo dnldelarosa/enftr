@@ -1,5 +1,5 @@
 Package: enftr
-Title: Encuesta Nacional (Tradicional) De Fuerza de Trabajo (ENFT) en R
+Title: Encuesta Nacional (Tradicional) De Fuerza De Trabajo (ENFT) en R
 Version: 0.0.2.9001
 Authors@R: 
     person(given = "Daniel E.",
