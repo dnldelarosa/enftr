@@ -1,6 +1,10 @@
 ft_compute_pobreza_monetaria <- function(tbl, ing_ext, remesas) { 
   tbl <- ft_compute_factor_onaplan(tbl)
   ft_compute_ing_total_pobreza(tbl, ing_ext, remesas) %>%
+    dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR) %>%
+    dplyr::summarise(ingreso_percapita = sum(ing_total_pobreza / mean(EFT_CANT_MIEMBROS, na.rm = T), na.rm = T)) %>%
+    dplyr::ungroup() %>% 
+    dplyr::right_join(tbl) %>%
     dplyr::left_join(lineas_morillo_zona, copy = T) %>%
     dplyr::mutate(
       pobreza_monetaria = dplyr::case_when(
@@ -17,7 +21,8 @@ ft_compute_factor_onaplan <- function(tbl) {
     dplyr::left_join(poblacion_onaplan, copy = T, by = "EFT_PERIODO") %>%
     dplyr::group_by(EFT_PERIODO) %>%
     dplyr::mutate(factor_onaplan = EFT_FACTOR_EXP / sum(EFT_FACTOR_EXP, na.rm = T) * poblacion_onaplan) %>%
-    dplyr::select(-poblacion_onaplan)
+    dplyr::select(-poblacion_onaplan) %>% 
+    dplyr::ungroup()
 }
 
 ft_compute_ing_ocup_prin_mensual <- function(tbl) {
@@ -165,7 +170,8 @@ ft_compute_ing_ext_intereses_alquiler <- function(tbl, ing_ext) {
     dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO) %>%
     dplyr::summarise(ing_ext_intereses_alquiler = sum(ing_ext_intereses_alquiler, na.rm = T)) %>%
     dplyr::right_join(tbl) %>% 
-    dplyr::mutate(ing_ext_intereses_alquiler = tidyr::replace_na(ing_ext_intereses_alquiler, 0))
+    dplyr::mutate(ing_ext_intereses_alquiler = tidyr::replace_na(ing_ext_intereses_alquiler, 0)) %>% 
+    dplyr::ungroup()
 }
 
 ft_compute_ing_intereses_dividendo <- function(tbl) {
@@ -194,7 +200,8 @@ ft_compute_ing_ext_pension <- function(tbl, ing_ext) {
     dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO) %>%
     dplyr::summarise(ing_ext_pension = sum(ing_ext_pension, na.rm = T)) %>%
     dplyr::right_join(tbl) %>% 
-    dplyr::mutate(ing_ext_pension = tidyr::replace_na(ing_ext_pension, 0))
+    dplyr::mutate(ing_ext_pension = tidyr::replace_na(ing_ext_pension, 0)) %>% 
+    dplyr::ungroup()
 }
 
 ft_compute_ing_ayuda_gobierno <- function(tbl) {
@@ -229,7 +236,8 @@ ft_compute_ing_remesas_ext_20001 <- function(ing_ext) {
     ) %>%
     dplyr::mutate(remesas = EFT_MONTO_ING_REMESA_SEM * tipo_cambio / 6) %>%
     dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO) %>%
-    dplyr::summarise(ing_remesas_ext = sum(remesas, na.rm = T))
+    dplyr::summarise(ing_remesas_ext = sum(remesas, na.rm = T)) %>% 
+    dplyr::ungroup()
 }
 
 ft_compute_ing_remesas_ext_20002_20071 <- function(remesas) {
@@ -385,7 +393,7 @@ ft_compute_ing_especie_ayuda_ong <- function(tbl) {
     )
 }
 
-ft_compute_ing_ocasional_nac <- function(tbl) {
+ft_compute_ing_ocasional_nac <- function(tbl) { 
   tbl %>%
     dplyr::mutate(ing_ocasional_nac = tidyr::replace_na(EFT_MONTO_OCASIONAL_ING_NAC, 0))
 }
@@ -406,7 +414,8 @@ ft_compute_ing_ocasional_ext <- function(tbl, ing_ext) {
     dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO) %>% 
     dplyr::summarise(ing_ocasional_ext = dplyr::if_else(EFT_PERIODO == "1/2000", sum(ing_ocasional_ext, na.rm = T)/6, sum(ing_ocasional_ext, na.rm = T))) %>% 
     dplyr::right_join(tbl) %>% 
-    plyr::mutate(ing_ocasional_ext = tidyr::replace_na(ing_ocasional_ext, 0))
+    plyr::mutate(ing_ocasional_ext = tidyr::replace_na(ing_ocasional_ext, 0)) %>% 
+    dplyr::ungroup()
 }
 
 ft_compute_ing_regalos_ext <- function(tbl, ing_ext) {
@@ -414,7 +423,8 @@ ft_compute_ing_regalos_ext <- function(tbl, ing_ext) {
     dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO) %>%
     dplyr::summarise(ing_regalos_ext = sum(EFT_MONTO_EQUIV_REGALO, na.rm = TRUE)) %>%
     dplyr::right_join(tbl) %>% 
-    dplyr::mutate(ing_regalos_ext = tidyr::replace_na(ing_regalos_ext, 0))
+    dplyr::mutate(ing_regalos_ext = tidyr::replace_na(ing_regalos_ext, 0)) %>% 
+    dplyr::ungroup()
 }
 
 ft_compute_ing_otros <- function(tbl) {
@@ -422,9 +432,32 @@ ft_compute_ing_otros <- function(tbl) {
     dplyr::mutate(ing_otros = tidyr::replace_na(EFT_MONTO_OTROS_ING_NAC, 0))
 }
 
-ft_compute_ing_total_pobreza <- function(tbl, ing_ext, remesas){
+ft_compute_ing_convencional_pobreza <- function(tbl, ing_ext, remesas){
   tbl <- ft_compute_ing_ocup_prin_mensual(tbl)
   tbl <- ft_compute_ing_ocup_secun_mensual(tbl)
+  tbl <- ft_compute_ing_alqui_renta_propiedades(tbl)
+  tbl <- ft_compute_ing_ext_intereses_alquiler(tbl, ing_ext)
+  tbl <- ft_compute_ing_intereses_dividendo(tbl)
+  tbl <- ft_compute_ing_pension_jubilacion(tbl)
+  tbl <- ft_compute_ing_ext_pension(tbl, ing_ext)
+  tbl <- ft_compute_ing_ayuda_gobierno(tbl)
+  tbl <- ft_compute_ing_remesas_nac(tbl)
+  tbl <- ft_compute_ing_remesas_ext(tbl, remesas, ing_ext)
+  tbl <- ft_compute_ing_ocasional_nac(tbl)
+  tbl <- ft_compute_ing_ocasional_ext(tbl, ing_ext)
+  tbl <- ft_compute_ing_regalos_ext(tbl, ing_ext)
+  tbl <- ft_compute_ing_otros(tbl)
+  tbl <- tbl %>%
+    dplyr::mutate(
+      ing_convencional_pobreza = ing_ocup_prin_mensual + ing_ocup_secun_mensual +
+        ing_alqui_renta_propiedades + ing_ext_intereses_alquiler + ing_intereses_dividendo + 
+        ing_pension_jubilacion + ing_ext_pension + ing_ayuda_gobierno + 
+        ing_remesas_nac + ing_remesas_ext + ing_ocasional_nac +
+        ing_ocasional_ext + ing_regalos_ext + ing_otros
+    ) 
+}
+
+ft_compute_ing_adicional_pobreza <- function(tbl){
   tbl <- ft_compute_ing_comisiones_mensual(tbl)
   tbl <- ft_compute_ing_propinas_mensual(tbl)
   tbl <- ft_compute_ing_horas_extras_mensual(tbl)
@@ -440,40 +473,30 @@ ft_compute_ing_total_pobreza <- function(tbl, ing_ext, remesas){
   tbl <- ft_compute_ing_especie_vestido_mensual(tbl)
   tbl <- ft_compute_ing_especie_otros_mensual(tbl)
   tbl <- ft_compute_ing_especie_auto(tbl)
-  tbl <- ft_compute_ing_imputado_vivienda_propia(tbl)
-  tbl <- ft_compute_ing_alqui_renta_propiedades(tbl)
-  tbl <- ft_compute_ing_intereses_dividendo(tbl)
-  tbl <- ft_compute_ing_pension_jubilacion(tbl)
-  tbl <- ft_compute_ing_ayuda_gobierno(tbl)
-  tbl <- ft_compute_ing_remesas_nac(tbl)
+  tbl <- ft_compute_ing_especie_ayuda_ong(tbl)
   tbl <- ft_compute_ing_adicionales(tbl)
-  #tbl <- ft_compute_ing_especie_ayuda_ong(tbl)
-  #tbl <- ft_compute_ing_ocasional_nac(tbl)
-  #tbl <- ft_compute_ing_otros(tbl)
-  tbl <- ft_compute_ing_ext_intereses_alquiler(tbl, ing_ext)
-  tbl <- ft_compute_ing_ext_pension(tbl, ing_ext)
-  #tbl <- ft_compute_ing_ocasional_ext(tbl, ing_ext)
-  #tbl <- ft_compute_ing_regalos_ext(tbl, ing_ext)
-  tbl <- ft_compute_ing_remesas_ext(tbl, remesas, ing_ext)
   tbl <- tbl %>%
     dplyr::mutate(
-      ing_pobreza_total = ing_ocup_prin_mensual + ing_ocup_secun_mensual + 
-        ing_comisiones_mensual + ing_propinas_mensual + ing_horas_extras_mensual + 
-        ing_vacaciones_mensual + ing_dividendos_mensual + ing_bonificaciones_mensual + 
-        ing_regalia_pascual_mensual + ing_utilidades_empresariales_mensual + 
-        ing_beneficios_marginales_mensual + ing_especie_alimentos_mensual + 
-        ing_especie_viviendas_mensual + ing_especie_transporte + 
+      ing_adicional_pobreza = ing_comisiones_mensual + ing_propinas_mensual + 
+        ing_horas_extras_mensual + ing_vacaciones_mensual + ing_dividendos_mensual + 
+        ing_bonificaciones_mensual + ing_regalia_pascual_mensual + 
+        ing_utilidades_empresariales_mensual + ing_beneficios_marginales_mensual + 
+        ing_especie_alimentos_mensual + ing_especie_viviendas_mensual + ing_especie_transporte + 
         ing_especie_vestido_mensual + ing_especie_otros_mensual + ing_especie_auto + 
-        ing_imputado_vivienda_propia + ing_alqui_renta_propiedades + 
-        ing_ext_intereses_alquiler + ing_intereses_dividendo + ing_pension_jubilacion + 
-        ing_ext_pension + ing_ayuda_gobierno + ing_remesas_nac + ing_remesas_ext + 
-        ing_adicionales #+ ing_especie_ayuda_ong + ing_ocasional_nac + ing_ocasional_ext + 
-        #ing_regalos_ext + ing_otros
+        ing_adicionales +  ing_especie_ayuda_ong
     ) 
-  
-  tbl %>%
-    dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR) %>%
-    dplyr::summarise(ingreso_percapita = sum(ing_pobreza_total / mean(EFT_CANT_MIEMBROS, na.rm = T), na.rm = T)) %>%
-    dplyr::ungroup() %>% 
-    dplyr::right_join(tbl)
+}
+
+ft_compute_ing_total_pobreza <- function(tbl, ing_ext, remesas){
+  tbl <- ft_compute_ing_convencional_pobreza(tbl, ing_ext, remesas)
+  tbl <- ft_compute_ing_imputado_vivienda_propia(tbl)
+  tbl <- ft_compute_ing_adicional_pobreza(tbl)
+  tbl <- tbl %>%
+    dplyr::mutate(
+      ing_total_pobreza = ing_convencional_pobreza + 
+        ing_imputado_vivienda_propia + 
+        ing_adicional_pobreza - ing_especie_ayuda_ong -
+        ing_ocasional_nac - ing_ocasional_ext -
+        ing_regalos_ext - ing_otros
+    ) 
 }
