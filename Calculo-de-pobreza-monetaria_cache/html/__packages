@@ -1,0 +1,11 @@
+base
+usethis
+devtools
+dplyr
+readxl
+tidyr
+enftr
+haven
+stringr
+scales
+ggplot2

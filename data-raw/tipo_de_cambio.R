@@ -1,4 +1,4 @@
-tdc_td13 <- readxl::read_excel("D:/MEGA/PARETO/DB/ENFTR/Pobreza Monetaria/tipos de camio td-13.xlsx", skip = 1) %>% 
+tdc_morillo <- readxl::read_excel("Files/Datos/Tipos de cambio Morillo.xlsx", skip = 1) %>% 
   tidyr::drop_na(`Peso Dominicano`) %>% 
   dplyr::filter(`Peso Dominicano` != "Peso Dominicano", `...2` != "Promedio") %>% 
   tidyr::fill(`Período`) %>% 
@@ -19,10 +19,29 @@ tdc_td13 <- readxl::read_excel("D:/MEGA/PARETO/DB/ENFTR/Pobreza Monetaria/tipos 
       moneda == "Peso Dominicano" ~ "DOP",
       moneda == "Yen Japonés" ~ "JPY"
     )
+  ) %>% 
+  dplyr::mutate(
+    cod_moneda2 = dplyr::case_when(
+      cod_moneda == "DOP" ~ 1,
+      cod_moneda == "USD" ~ 2,
+      cod_moneda == "CAD" ~ 5,
+      cod_moneda == "GBP" ~ 6,
+      cod_moneda == "JPY" ~ 7,
+      cod_moneda == "VES" ~ 12,
+      cod_moneda == "CHF" ~ 13,
+      cod_moneda == "EUR" ~ 14,
+      cod_moneda == "BRL" ~ 21,
+      cod_moneda == "CNY" ~ 22,
+      cod_moneda == "XDR" ~ 23,
+      cod_moneda == "DKK" ~ 24,
+      cod_moneda == "NOK" ~ 25,
+      cod_moneda == "GBPE" ~ 26,
+      cod_moneda == "SEK" ~ 27
+    )
   )
 
 
-tasas_de_cambio <- readxl::read_excel("D:/MEGA/PARETO/DB/ENFTR/Pobreza Monetaria/TASAS_CONVERTIBLES_OTRAS_MONEDAS.xls", sheet = "Mensual", skip = 2) %>% 
+tdc_oficial <- readxl::read_excel("Files/Datos/TASAS_CONVERTIBLES_OTRAS_MONEDAS.xls", sheet = "Mensual", skip = 2) %>% 
   dplyr::filter(`Año` <= 2016) %>% 
   dplyr::mutate(`Peso Dominicano` = 1) %>% 
   Dmisc::vars_to_date(year = 1, month = 2) %>% 
@@ -48,23 +67,7 @@ tasas_de_cambio <- readxl::read_excel("D:/MEGA/PARETO/DB/ENFTR/Pobreza Monetaria
       
     )
   ) %>% 
-  dplyr::filter(date > max(tdc_td13$date))
-
-#tdc_td13 %>% 
-#  select(-moneda) %>% 
-#  rename("morillo" = "value")%>% 
-#  left_join(
-#    tasas_de_cambio %>% 
-#      select(-moneda)
-#  ) %>% 
-#  drop_na() %>% 
-#  mutate(
-#    diff = morillo - value
-#  ) %>% 
-#  summarise(sum(diff))%>% 
-#  View()
-
-tipo_de_cambio <- dplyr::bind_rows(tdc_td13, tasas_de_cambio) %>% 
+  bind_rows(tdc_morillo) %>% 
   dplyr::mutate(
     cod_moneda2 = dplyr::case_when(
       cod_moneda == "DOP" ~ 1,
@@ -83,7 +86,9 @@ tipo_de_cambio <- dplyr::bind_rows(tdc_td13, tasas_de_cambio) %>%
       cod_moneda == "GBPE" ~ 26,
       cod_moneda == "SEK" ~ 27
     )
-  )
+  ) %>% 
+distinct(date, cod_moneda2, .keep_all = T)
 
 
-usethis::use_data(tipo_de_cambio, overwrite = TRUE)
+usethis::use_data(tdc_morillo, overwrite = TRUE)
+usethis::use_data(tdc_oficial, overwrite = TRUE)
