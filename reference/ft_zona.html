@@ -82,11 +82,11 @@ los valores como 1 y 2.</p>
     <h2 id="ref-examples">Ejemplos<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in">  <span class="op">(</span><span class="va">enft</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>EFT_PERIODO <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"1/2016"</span>, <span class="fl">5</span><span class="op">)</span>, S1_P4 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">5</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   EFT_PERIODO S1_P4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      1/2016     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      1/2016     0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2      1/2016     1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3      1/2016     0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4      1/2016     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5      1/2016     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      1/2016     0</span>
 <span class="r-in">  <span class="fu">ft_zona</span><span class="op">(</span><span class="va">enft</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Utilice la variable 'EFT_ZONA'</span>
 </code></pre></div>
