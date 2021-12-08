@@ -85,6 +85,9 @@
     <loc>/reference/ft_poblacion_inactiva.html</loc>
   </url>
   <url>
+    <loc>/reference/ft_regiones_desarrollo.html</loc>
+  </url>
+  <url>
     <loc>/reference/ft_sector_ocupacion.html</loc>
   </url>
   <url>
@@ -98,6 +101,9 @@
   </url>
   <url>
     <loc>/reference/ft_zona.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ft_zona_desarrollo_fronterizo.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
