@@ -7,6 +7,10 @@ dict0 <- list(
     lab = "¿Tiene esta vivienda instalación para agua corriente por tubería conectada a la red pública?",
     labs = c("Sí" = 1, "No" = 2)
   ),
+  EFT_ALFABETISMO = list(
+    lab = "¿Sabe leer y escribir?",
+    labs = c("No aplica" = 0, "Sí" = 1, "No" = 2)
+  ),
   EFT_CANT_PERS_TRAB = list(
     lab = "¿Cuántas personas trabajan o trabajaban en ese negocio, actividad económica o empresa?",
     labs = c(
