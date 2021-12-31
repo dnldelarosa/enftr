@@ -17,8 +17,9 @@ ft_horas_semanal(tbl, min_edad = 15)
 variable \code{horas_semanal} agregada.
 }
 \description{
-Horas trabajadas a la semana
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+En el periodo 2000-2005 se imputó cero (0) para algunos casos que no aplicaban
+esta función toma cuenta de esa situación eliminando todos los valores
+asignados en cero (0).
 }
 \examples{
 \dontrun{

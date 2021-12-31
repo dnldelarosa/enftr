@@ -302,6 +302,75 @@ ft_poblacion_inactiva <- function(tbl, min_edad = 15) {
 }
 
 
+#' Categoría de la ocupación principal
+#' `r lifecycle::badge('experimental')`
+#' 
+#' Las encuestas levantadas entre 2000 y 2004 contemplaban 10 categorías de
+#' ocupación, pero en 2005 se redujeron a 8. Vea los cuestionarios 
+#' correspondientes a esos periodos para más información.
+#' 
+#' Esta función homologa las categorías de ocupación a las categorías de
+#' menor frecuencia en la encuesta. Dígase las utilizadas a partir de 2005.
+#'
+#' @param tbl [data.frame] Data.frame con los datos de la encuesta
+#'
+#' @return [data.frame] los datos suministrados en el input tbl, pero con la
+#'    variable \code{categoria_ocupacion_principal} agregada.
+#' 
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' enft <- ft_categoria_ocupacion_principal(enft)
+#' }
+ft_categoria_ocupacion_principal <- function(tbl){
+    tbl %>%
+        ft_peri_vars() %>%
+        dplyr::mutate(
+            categoria_ocupacion_principal = dplyr::case_when(
+                dplyr::between(ano, 2000, 2004) &
+                EFT_CATEGORIA_OCUP_PRINC %in% 7:8 ~ 7,
+                dplyr::between(ano, 2000, 2004) &
+                EFT_CATEGORIA_OCUP_PRINC %in% 9:10 ~ 8,
+                TRUE ~ EFT_CATEGORIA_OCUP_PRINC
+            )
+        )
+}
+
+
+#' Cantidad de personas trabajan en la empresa
+#' `r lifecycle::badge('experimental')`
+#' 
+#' Esta función homologa los rangos de cantidad de personas que laboran en la
+#' empresa. Para el período 2000-2003 se incluían solo 4 categorías, pero de 
+#' 2004 en adelante se incluyen 7 categorías. Vea los cuestionarios 
+#' correspondientes a esos periodos para más información.
+#' 
+#' @param tbl [data.frame] Data.frame con los datos de la encuesta
+#' 
+#' @return [data.frame] los datos suministrados en el input tbl, pero con la
+#'  variable \code{cantidad_personas_trabajan} agregada.
+#' 
+#' @export 
+#' 
+#' @examples 
+#' \dontrun{
+#' enft <- ft_cantidad_personas_trabajan(enft)
+#' }
+ft_cantidad_personas_trabajan <- function(tbl){
+    tbl %>%
+        ft_peri_vars() %>%
+        dplyr::mutate(
+            cantidad_personas_trabajan = dplyr::case_when(
+                ano >= 2004 & EFT_CANT_PERS_TRAB %in% 1:2 ~ 1,
+                ano >= 2004 & EFT_CANT_PERS_TRAB %in% 3:4 ~ EFT_CANT_PERS_TRAB - 1,
+                ano >= 2004 & EFT_CANT_PERS_TRAB >= 5 ~ 4,
+                EFT_CANT_PERS_TRAB != 0 ~ EFT_CANT_PERS_TRAB
+            )
+        )
+}
+
+
 #' Sector de ocupación
 #' `r lifecycle::badge('stable')`
 #'
@@ -399,6 +468,10 @@ ft_perceptores_ingresos <- function(tbl, min_edad = 15) {
 
 #' Horas trabajadas a la semana
 #' `r lifecycle::badge('stable')`
+#' 
+#' En el periodo 2000-2005 se imputó cero (0) para algunos casos que no aplicaban
+#' esta función toma cuenta de esa situación eliminando todos los valores
+#' asignados en cero (0).
 #'
 #' @param tbl [data.frame] Data.frame con los datos de la encuesta
 #' @param min_edad [integer] Edad mínima para considerar una persona en edad de trabajar
@@ -416,10 +489,22 @@ ft_horas_semanal <- function(tbl, min_edad = 15) {
         ft_perceptores_ingresos(min_edad) %>%
         dplyr::mutate(
             horas_semanal = dplyr::case_when(
+                EFT_HORAS_SEM_OCUP_PRINC > 0 & 
                 perceptores_ingresos == 1 ~ EFT_HORAS_SEM_OCUP_PRINC
             )
         )
 }
+
+
+ft_dias_semana_ocupacion_principal <- function(tbl){
+    tbl %>%
+        dplyr::mutate(
+            dias_semana_ocupacion_principal = dplyr::case_when(
+                EFT_DIAS_SEM_OCUP_PRINC > 0 ~ EFT_DIAS_SEM_OCUP_PRINC
+            )
+        )
+}
+
 
 
 #' Ingreso laboral mensual
