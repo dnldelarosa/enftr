@@ -32,7 +32,7 @@ ft_browse_dict <- function(dict = enftr::dict, ...) {
 #'   o equivalente, a partir del diccionario de la encuesta.
 #'
 #' @seealso
-#'   Etiquetas de datos \code{vignette("labels", package = "endomer")}
+#'   Etiquetas de datos \code{vignette("labeler", package = "labeler")}
 #'
 #' @export
 #'
@@ -67,7 +67,7 @@ ft_setLabels <- function(tbl, dict = enftr::dict, vars = NULL) {
 #'   valores utilizando las etiquetas de datos correspondientes
 #'
 #' @seealso
-#'   Etiquetas de datos \code{vignette("labels", package = "endomer")}
+#'   Etiquetas de datos \code{vignette("labeler", package = "labeler")}
 #'
 #' @export
 #'

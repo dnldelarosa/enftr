@@ -38,5 +38,5 @@ o equivalente, a partir del diccionario de la encuesta.
 }
 }
 \seealso{
-Etiquetas de datos \code{vignette("labels", package = "endomer")}
+Etiquetas de datos \code{vignette("labeler", package = "labeler")}
 }

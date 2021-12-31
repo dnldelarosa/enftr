@@ -33,5 +33,5 @@ Utiliza las etiquetas de datos de una variable
 }
 }
 \seealso{
-Etiquetas de datos \code{vignette("labels", package = "endomer")}
+Etiquetas de datos \code{vignette("labeler", package = "labeler")}
 }
