@@ -19,6 +19,6 @@ Vea Ley 28-01 de la República Dominicana.
 }
 \examples{
 \dontrun{
- enft <- ft_zona_desarrollo_fronterizo(enft)
+enft <- ft_zona_desarrollo_fronterizo(enft)
 }
 }

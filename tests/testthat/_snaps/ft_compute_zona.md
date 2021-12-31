@@ -11,8 +11,10 @@
 
     Code
       ft_zona(enft2)
-    Message <simpleMessage>
-      Utilice la variable 'EFT_ZONA'
+    Output
+        EFT_PERIODO EFT_ZONA zona
+      1           1        0    1
+      2           2        1    2
 
 ---
 
@@ -21,6 +23,8 @@
     Warning <lifecycle_warning_deprecated>
       `ft_compute_zona()` was deprecated in enftr 0.1.0.
       Please use `ft_zona()` instead.
-    Message <simpleMessage>
-      Utilice la variable 'EFT_ZONA'
+    Output
+        EFT_PERIODO EFT_ZONA zona
+      1           1        0    1
+      2           2        1    2
 
