@@ -2,7 +2,7 @@
 title: "Encuesta Nacional (tradicional) de Fuerza de Trabajo (ENFT)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{enftr}
+  %\VignetteIndexEntry{Encuesta Nacional (tradicional) de Fuerza de Trabajo (ENFT)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

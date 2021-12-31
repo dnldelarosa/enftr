@@ -30,34 +30,47 @@ reference:
 - title: Utilería
   desc: Funciones que hacen cálculos útiles para el procesamiento de la base de datos de la encuesta
   contents:
-    - ft_peri_vars
-    - ft_db_connect
-    - ft_version
     - enft
+    - ft_db_connect
+    - ft_peri_vars
+    - ft_version
 
 - title: Demográficas
   desc: Funciones útiles para el procesamiento de datos demográficos
   contents:
+    - ft_dominios_inferencia
+    - ft_dominios_inferencia1
+    - ft_dominios_inferencia2
+    - ft_dominios_inferencia3
+    - ft_regiones_desarrollo_685_00
+    - ft_regiones_desarrollo_710_04
     - ft_zona
-    - ft_regiones_desarrollo
     - ft_zona_desarrollo_fronterizo
 
 - title: Mercado Laboral
   desc: Funciones útiles para el procesamiento de indicadores de mercado laboral en la encuesta
   contents:
-    - ft_pet
-    - ft_ocupado
+    - ft_categoria_ocupacion_principal
+    - ft_cantidad_personas_trabajan
     - ft_desempleo_abierto
     - ft_desempleo_cesante_abierto
     - ft_desempleo_nuevo_abierto
-    - ft_pea_abierta
     - ft_desempleo_ampliado
     - ft_desempleo_cesante_ampliado
     - ft_desempleo_nuevo_ampliado
-    - ft_pea_ampliada
-    - ft_poblacion_inactiva
-    - ft_sector_ocupacion
     - ft_grupo_ocupacion
-    - ft_perceptores_ingresos
     - ft_horas_semanal
     - ft_ingreso_laboral_mensual
+    - ft_ocupado
+    - ft_pea_abierta
+    - ft_pea_ampliada
+    - ft_perceptores_ingresos
+    - ft_pet
+    - ft_poblacion_inactiva
+    - ft_sector_ocupacion
+
+- title: Educación
+  desc: Funciones útiles para el procesamiento de indicadores de educación en la encuesta
+  contents:
+    - ft_alfabeta
+    - ft_anos_educacion
