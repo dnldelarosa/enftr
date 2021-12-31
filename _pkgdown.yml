@@ -1,8 +1,22 @@
+url: https://endomer.github.io/enftr/
+
+
 template:
   bootstrap: 5
   bootswatch: minty
 
 lang: es
+
+
+authors:
+  Daniel E. de la Rosa:
+    href: http://dnldelarosa.com
+  Adatar:
+    html: <div><img src="https://raw.githubusercontent.com/adatar-do/adatar-do.github.io/main/logotipo.png" alt="Adatar" height="20"> <span style="font-weight:900; margin:10px;">Adatar</span></div>
+    href: http://adatar.do
+  sidebar:
+    roles: [aut, cph]
+
 
 reference:
 - title: Etiquetas de datos

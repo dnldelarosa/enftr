@@ -56,12 +56,10 @@ progress <- length(dict) / (357+length(dict1))
 progress <- ceiling(progress*100)
 ```
 
-1. Completar el diccionario. ![](https://us-central1-progress-markdown.cloudfunctions.net/progress/`r progress`)
+1. Completar el diccionario. `r Dmisc::progress_bar(progress)`
 2. Agregar una función para calcular la pobreza monetaria.
 2. Agregar una función para el cálculo del ICV.
-2. Escribir la guía de inicio rápido.
 2. Agregar validadores a las funciones para garantizar que las variables son del tipo y con el contenido esperado en los cálculos.
-2. Escribir tests.
 2. Hacer que todas las funciones trabajen con conexiones a base de datos (Las que usan cut3 específicamente).
 
 
