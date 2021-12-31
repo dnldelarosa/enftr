@@ -32,6 +32,19 @@
 #' }
 ft_peri_vars <- function(tbl, rm = FALSE, ano = TRUE, semestre = TRUE, periodo = TRUE) {
   EFT_PERIODO <- NULL
+  nombres <- dplyr::tbl_vars(tbl)
+  if("ano" %in% nombres){
+    tbl <- dplyr::select(tbl, -"ano")
+    ano <- TRUE
+  }
+  if("semestre" %in% nombres){
+    tbl <- dplyr::select(tbl, -"semestre")
+    semestre <- TRUE
+  }
+  if("periodo" %in% nombres){
+    tbl <- dplyr::select(tbl, -"periodo")
+    periodo <- TRUE
+  }
   tbl <- tbl %>%
     dplyr::left_join(
       tbl %>%
@@ -50,7 +63,7 @@ ft_peri_vars <- function(tbl, rm = FALSE, ano = TRUE, semestre = TRUE, periodo =
     dplyr::mutate(
       semestre = stringr::str_remove(semestre, "\\'") %>% as.numeric()
     ),
-      by = c("EFT_PERIODO"),
+    by = "EFT_PERIODO",
       copy = TRUE
     )
 

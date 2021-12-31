@@ -108,3 +108,4 @@ Finalmente es importante mencionar que utilizando la función `ft_browse_dict()`
 ft_browse_dict()
 ```
 
+> En la página "Índice" revisa la documentación de las funciones de la librería. En especial aquellas que estén relacionadas con lo que estés trabajando. En algunos casos pudieras encontrar aclaraciones importantes sobre los datos de la encuesta.
