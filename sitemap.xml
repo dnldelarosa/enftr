@@ -31,82 +31,19 @@
     <loc>/reference/dict.html</loc>
   </url>
   <url>
-    <loc>/reference/enft.html</loc>
+    <loc>/reference/ft_compute_ano.html</loc>
   </url>
   <url>
-    <loc>/reference/ft_browse_dict.html</loc>
+    <loc>/reference/ft_compute_zona.html</loc>
   </url>
   <url>
-    <loc>/reference/ft_db_connect.html</loc>
+    <loc>/reference/ft_dbConnect.html</loc>
   </url>
   <url>
-    <loc>/reference/ft_desempleo_abierto.html</loc>
+    <loc>/reference/ft_setLabels.html</loc>
   </url>
   <url>
-    <loc>/reference/ft_desempleo_ampliado.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_desempleo_cesante_abierto.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_desempleo_cesante_ampliado.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_desempleo_nuevo_abierto.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_desempleo_nuevo_ampliado.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_grupo_ocupacion.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_horas_semanal.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_ingreso_laboral_mensual.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_ocupado.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_pea_abierta.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_pea_ampliada.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_perceptores_ingresos.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_peri_vars.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_pet.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_poblacion_inactiva.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_regiones_desarrollo.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_sector_ocupacion.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_set_labels.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_use_labels.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_version.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_zona.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ft_zona_desarrollo_fronterizo.html</loc>
+    <loc>/reference/ft_useLabels.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
