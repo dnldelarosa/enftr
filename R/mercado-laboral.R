@@ -538,3 +538,25 @@ ft_ingreso_laboral_mensual <- function(tbl, min_edad = 15) {
             )
         )
 }
+
+
+ft_grupo_rama <- function(tbl){
+  tbl %>% 
+    dplyr::mutate(
+      grupo_rama = dplyr::case_when(
+        EFT_RAMA_PRINC < 100 ~ 1,
+        EFT_RAMA_PRINC < 150 ~ 2,
+        EFT_RAMA_PRINC < 400 ~ 3,
+        EFT_RAMA_PRINC < 450 ~ 4,
+        EFT_RAMA_PRINC < 500 ~ 5,
+        EFT_RAMA_PRINC < 550 ~ 6,
+        EFT_RAMA_PRINC < 600 ~ 7,
+        EFT_RAMA_PRINC < 650 ~ 8,
+        EFT_RAMA_PRINC < 700 ~ 9,
+        EFT_RAMA_PRINC < 750 ~ 11,
+        EFT_RAMA_PRINC < 800 ~ 10,
+        EFT_RAMA_PRINC >= 800 ~ 11
+      )
+    )
+}
+

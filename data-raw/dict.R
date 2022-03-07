@@ -353,6 +353,22 @@ dict1 <- list(
       "Población sin Grupo Ocupacional" = 10
     )
   ),
+  grupo_rama = list(
+    lab = "Grupos de Ramas de Actividad Económica",
+    labs = c(
+      "Agricultura y Ganadería" = 1,
+      "Explotación de Minas y Canteras" = 2,
+      "Industrias Manufactureras" = 3,
+      "Electricidad, Gas y Agua" = 4,
+      "Construcción" = 5,
+      "Comercio al por Mayor y Menor" = 6,
+      "Hoteles, Bares y Restaurantes" = 7,
+      "Transporte y Comunicaciones" = 8,
+      "Intermediación Financiera y Seguros" = 9,
+      "Administración Pública y Defensa" = 10,
+      "Otros Servicio" = 11
+    )
+  ),
   horas_semanal = list(
     lab = "Horas trabajadas a la semana",
     labs = c("Sí" = 1, "No" = 0)
