@@ -38,6 +38,7 @@ ft_anos_educacion <- function(tbl) {
 #' casos en que la pregunta no aplicaba. Esta variable omite esos valores.
 #' 
 #' @param tbl [data.frame] una conexión a base de datos o data.frame con los datos
+#' @param min_edad [integer] la edad mínima para el cálculo de la variable
 #' 
 #' @return [data.frame]: Los datos suministrados en el argumento \code{tbl} con
 #'  la variable \code{alfabeta} adicionada.
@@ -48,12 +49,12 @@ ft_anos_educacion <- function(tbl) {
 #' \dontrun{
 #'  enft <- ft_alfabeta(enft)
 #' }
-ft_alfabeta <- function(tbl){
+ft_alfabeta <- function(tbl, min_edad = 15){
   EFT_ALFABETISMO <- NULL
   tbl %>%
     dplyr::mutate(
       alfabeta = dplyr::case_when(
-        EFT_ALFABETISMO %in% 1:2 ~ EFT_ALFABETISMO
+        EFT_EDAD >= min_edad & EFT_ALFABETISMO %in% 1:2 ~ EFT_ALFABETISMO
       )
     )
 }

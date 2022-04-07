@@ -5,10 +5,12 @@
 \title{Alfabetismo de la persona (Sabe leer y escribir)
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}}
 \usage{
-ft_alfabeta(tbl)
+ft_alfabeta(tbl, min_edad = 15)
 }
 \arguments{
 \item{tbl}{\link{data.frame} una conexión a base de datos o data.frame con los datos}
+
+\item{min_edad}{\link{integer} la edad mínima para el cálculo de la variable}
 }
 \value{
 \link{data.frame}: Los datos suministrados en el argumento \code{tbl} con

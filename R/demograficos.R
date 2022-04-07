@@ -150,10 +150,10 @@ ft_regiones_desarrollo_685_00 <- function(tbl) {
 #' }
 ft_zona_desarrollo_fronterizo <- function(tbl) {
   tbl %>%
-    ft_regiones_desarrollo() %>%
+    ft_regiones_desarrollo_710_04() %>%
     dplyr::mutate(
       zona_desarrollo_fronterizo = dplyr::case_when(
-        EFT_PROVINCIA %in% c(16, 10, 7, 5, 15, 26, 3) ~ 1,
+        as.numeric(EFT_PROVINCIA) %in% as.numeric(c("16", "10", "07", "05", "15", "26", "03")) ~ 1,
         TRUE ~ 0
       )
     )
