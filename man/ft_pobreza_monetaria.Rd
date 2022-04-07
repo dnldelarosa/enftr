@@ -2,29 +2,54 @@
 % Please edit documentation in R/sociales.R
 \name{ft_pobreza_monetaria}
 \alias{ft_pobreza_monetaria}
-\title{Cálculo de pobreza monetaria con metodología oficial
+\title{Pobreza monetaria (Metodología oficial) de la República Dominicana
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}}
 \usage{
-ft_pobreza_monetaria(conn, name = "pobreza_monetaria")
+ft_pobreza_monetaria(
+  tbl,
+  ing_ext = tbl,
+  remesas = tbl,
+  .keep = FALSE,
+  .reuse = FALSE
+)
 }
 \arguments{
-\item{conn}{conexión a la base de datos}
+\item{tbl}{\link{data.frame}: datos de la ENFT. Puede ser conexión a base de datos.}
 
-\item{name}{nombre de la tabla en la base de datos}
+\item{ing_ext}{\link{data.frame}: datos de ingresos del exterior. Vea detalles.}
+
+\item{remesas}{\link{data.frame}: datos de remesas. Vea detalles.}
+
+\item{.keep}{indica si se deben mantener las variables intermedias en la data.
+Puede ser \code{TRUE} o \code{FALSE} (default), o un vector de characeter con las variables a mantener.}
+
+\item{.reuse}{indica si se deben reutilizar las variables intermedias que estén disponibles en la data.
+Puede ser \code{TRUE} o \code{FALSE}(default). O un vector de characeter con las variables a reutilizar.}
 }
 \value{
-data.frame con los datos de la tabla
+\link{data.frame}: los datos del argumento \code{tbl} con la variable \code{pobreza_monetaria} agregada.
+Si .keep no es \code{FALSE} otras variables intermedias se mantienen.
 }
 \description{
-Cálculo de pobreza monetaria con metodología oficial
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Esta función utiliza los datos de la Encuesta Nacional (tradicional) de Fuerza
+de Trabajo (ENFT) de la República Dominicana para calcular la pobreza monetaria
+siguiendo la metodología oficial.
 }
 \details{
-Por el momento, carga los datos desde una tabla
-en la base de datos.
+Argumentos \code{ing_ext} y \code{remesas}: En las primeras versiones de la encuesta,
+las variables de ingresos del exterior y remesas venían en tablas separadas,
+por lo que se presentan argumentos para suministrar dichas tablas. Sin embargo,
+estos argumentos apuntan por defecto a la tabla principal, por lo que de tener
+esta información integrada en una única tabla, se puede omitir estos argumentos.
+
+NOTA: Por el momento, esta función solo calcula la pobreza monetaria en el período 2005-2016.
+A pesar de que se han publicado documentos metodológicos para el cálculo de la pobreza
+monetaria, la formula como tal no es pública, por lo que no se puede asegurar que los
+resultados sean los mismos que aquellos que se obtienen con la formula oficial.
+Aunque los resultados son bastante aproximados.
 }
 \examples{
 \dontrun{
-  pobreza_monetaria <- pobreza_monetaria(conn, "pobreza_monetaria")
+ enft <- ft_pobreza_monetaria(enft, enft_ing_ext, enft_remesas)
 }
 }

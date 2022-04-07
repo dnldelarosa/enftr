@@ -31,5 +31,5 @@ ipc_oficial <- readxl::read_excel("Files/Datos/ipc_base_2010.xls", skip = 7, col
 #     ipc = ipc/0.2841 # Llevando a base 1999
 #   )
 
-usethis::use_data(ipc_morillo, overwrite = TRUE)
+##usethis::use_data(ipc_morillo, overwrite = TRUE)
 usethis::use_data(ipc_oficial, overwrite = TRUE)

@@ -1,6 +1,6 @@
 lineas_morillo_zona <- read_excel("Files/Datos/Lineas de pobreza Morillo.xlsx")
 
-usethis::use_data(lineas_morillo_zona, overwrite = TRUE)
+###usethis::use_data(lineas_morillo_zona, overwrite = TRUE)
 
 lineas_oficial_zona <- read_excel("Files/Datos/Lineas de pobreza Oficial.xlsx", skip = 3)[,c(1,3,4)] %>% 
   tidyr::drop_na() %>% 

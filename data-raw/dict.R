@@ -1,5 +1,5 @@
 dict0 <- list(
-  encoding = 'latin1',
+  #encoding = 'latin1',
   EFT_ACEPTARIA_TRAB_SEM_ANT = list(
     lab = "¿Pudiera haber aceptado un trabajo la semana pasada si le hubieran ofrecido uno?",
     labs = c("Sí" = 1, "No" = 2)
@@ -35,12 +35,12 @@ dict0 <- list(
       "31 a 50 personas" = 6,
       "51 y más personas" = 7
     ),
-    warn = "Esta variable tiene un problema de compatibilidad entre los periodos 2000-2003 y 2004-2016. Vea `?enftr::ft_cantidad_personas_trabajan` para más información."
+    warn = "Esta variable tiene un problema de compatibilidad entre los periodos 2000-2003 y 2004-2016. Vea `enftr::ft_cantidad_personas_trabajan` para más información."
   ),
   EFT_CATEGORIA_OCUP_PRINC = list(
     lab = "En esa ocupación, ¿usted es? (o usted era, para los desempleados)",
     labs = "link::categoria_ocupacion_principal",
-    warn = "Esta variable tiene un problema de compatibilidad entre los periodos 2000-2004 y 2005-2016. Vea `?enftr::ft_categoria_ocupacion_principal` para más información."
+    warn = "Esta variable tiene un problema de compatibilidad entre los periodos 2000-2004 y 2005-2016. Vea `enftr::ft_categoria_ocupacion_principal` para más información."
   ),
   EFT_COSIO_LAVO_SEM_ANT = list(
     lab = "¿Buscó trabajo la semana pasada o estuvo tratando de establecer su propio negocio, actividad económica o empresa?",
@@ -52,7 +52,7 @@ dict0 <- list(
   ),
   EFT_DIAS_SEM_OCUP_PRINC = list(
     lab = "¿Cuántós días a la semana trabaja regularmente en esa ocupación?",
-    warn = "Esta variable imputa cero (0) en los casos que no aplica para el periodo 2000-2005. Vea `?enftr::ft_dias_semana_ocupacion_principal` para más información."
+    warn = "Esta variable imputa cero (0) en los casos que no aplica para el periodo 2000-2005. Vea `enftr::ft_dias_semana_ocupacion_principal` para más información."
   ),
   EFT_EDAD = list(
     lab = "¿Qué edad tiene en años cumplidos?"

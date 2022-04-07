@@ -1,6 +1,6 @@
 Package: enftr
 Title: Encuesta Nacional (Tradicional) De Fuerza de Trabajo (ENFT) en R
-Version: 0.7.0
+Version: 0.8.0
 Authors@R: 
     c(person(given = "Daniel E.",
            family = "de la Rosa",
@@ -22,8 +22,10 @@ Imports:
     magrittr,
     labeler,
     lifecycle,
-    Dmisc (>= 0.1.5.9000),
-    tidyr
+    Dmisc,
+    tidyr,
+    cli,
+    lubridate
 Remotes: 
     adatar-do/labeler,
     drdsdaniel/Dmisc

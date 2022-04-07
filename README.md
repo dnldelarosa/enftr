@@ -50,7 +50,7 @@ remotes::install_github("endomer/enftr")
 
 1.  Completar el diccionario.
 
-  <svg width="50%" height="25" xmlns="http://www.w3.org/2000/svg">
+  <svg width="50%" height="25" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: auto;">
   <linearGradient id="a" x2="0" y2="100%">
     <stop offset="0" stop-color="#bbb" stop-opacity="0.2"/>
   <stop offset="1" stop-opacity="0.1"/>
@@ -64,12 +64,10 @@ remotes::install_github("endomer/enftr")
     </svg>
     
 
-2.  Agregar una función para calcular la pobreza monetaria.
-3.  Agregar una función para el cálculo del ICV.
-4.  Agregar validadores a las funciones para garantizar que las
+2.  Agregar una función para el cálculo del ICV.
+3.  Agregar validadores a las funciones para garantizar que las
     variables son del tipo y con el contenido esperado en los cálculos.
-5.  Hacer que todas las funciones trabajen con conexiones a base de
-    datos (Las que usan cut3 específicamente).
+4.  Escribir tests para la función de pobreza monetaria.
 
 ## Contribuye
 
@@ -86,7 +84,7 @@ Contribuyendo con el proyecto aceptas las términos y condiciones.
 <hr/>
 
 <a href="https://endomer.github.io/enftr/articles/enftr.html">
-  <svg width="50%" height="30" xmlns="http://www.w3.org/2000/svg">
+  <svg width="50%" height="30" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: auto;">
   <linearGradient id="a" x2="0" y2="100%">
     <stop offset="0" stop-color="#bbb" stop-opacity="0.2"/>
   <stop offset="1" stop-opacity="0.1"/>
