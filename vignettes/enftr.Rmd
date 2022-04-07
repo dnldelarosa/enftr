@@ -1,8 +1,8 @@
 ---
-title: "Encuesta Nacional (tradicional) de Fuerza de Trabajo (ENFT)"
+title: "Encuesta Nacional (tradicional) de Fuerza de Trabajo (enft_like)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Encuesta Nacional (tradicional) de Fuerza de Trabajo (ENFT)}
+  %\VignetteIndexEntry{Encuesta Nacional (tradicional) de Fuerza de Trabajo (enft_like)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -21,9 +21,9 @@ La Encuesta Nacional de Fuerza de Trabajo está concebida para ofrecer informaci
 * Estudiar la relación entre los resultados de las informaciones del mercado de trabajo y el comportamiento de las actividades económicas que conforman el Producto Interno Bruto (PIB).
 * Permitir la elaboración de estudios de comparabilidad internacional de las estadísticas laborales del país con otros de características similares. 
 
-A continuación, se presentan una tabla resumen con algunos detalles de interés acerca de la encuesta. Para mayor especificidad consulta el [Documento metodológico](https://github.com/endomer/enftr/tree/master/Files) y el [Boletín informativo No. I de la ENFT](https://github.com/endomer/enftr/tree/master/Files).
+A continuación, se presentan una tabla resumen con algunos detalles de interés acerca de la encuesta. Para mayor especificidad consulta el [Documento metodológico](https://github.com/endomer/enft_liker/tree/master/Files) y el [Boletín informativo No. I de la enft_like](https://github.com/endomer/enft_liker/tree/master/Files).
 
-|Especificaciones del Diseño					              |Encuesta Nacional (tradicional) de Fuerza de Trabajo (ENFT)                                                                                               |
+|Especificaciones del Diseño					              |Encuesta Nacional (tradicional) de Fuerza de Trabajo (enft_like)                                                                                               |
 |---------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
 |Población objeto de estudio					              |Hogares residentes en las viviendas no colectivas o particulares ocupadas de la República Dominicana.                                                     |
 |Cobertura geográfica					                      |Todo el territorio nacional, incluyendo las islas aledañas.                                                                                               |
@@ -45,7 +45,7 @@ A continuación, se presentan una tabla resumen con algunos detalles de interés
 |Factores de expansión					                    |1,968 factores al año, 984 factores por semestre, calculados en base a: muestra efectiva, tasa de respuesta, actualizaciones cartográficas de las UPM’s y las proyecciones de ONAPLAN realizadas en el año 1999.|
 |Nomenclaturas					                            |a) Clasificación Internacional Uniforme de Ocupaciones (CIUO-88). b) Clasificación Industrial Internacional Uniforme de todas las Actividades Económicas (CIIU, Rev.3).|
 |Divulgación de resultados					                |Semestral|
-Table: **Documento metodológico de la Encuesta Nacional (tradicional) de Fuerza de Trabajo (ENFT)**
+Table: **Documento metodológico de la Encuesta Nacional (tradicional) de Fuerza de Trabajo (enft_like)**
 
 ### ¿Dónde puedo conseguir los datos de la encuesta? {-}
 
@@ -64,12 +64,11 @@ library(dplyr)
 
 Para mostrar algunas funcionalidades de la librería utilizaremos un pequeño `data.frame` que simulará los datos de la encuesta. El archivo tiene la siguiente estructura.
 ```{r}
-enft <- enftr::enft
-glimpse(enft)
+head(enft_like)
 ```
 Existen varias versiones de la base de datos de la encuesta. La versión más reciente corresponde a una versión con corrección de factores regionales para replicar las últimas estimaciones poblacionales de la Oficina Nacional de Estadísticas (ONE). Esta versión de la encuesta lleva los nombres de las variables precedidas por el patrón "EFT" además de que replica los valores anuales que se muestran a continuación.
 ```{r}
-enft %>% 
+enft_like %>% 
   ft_peri_vars() %>% 
   group_by(ano) %>% 
   summarise(
@@ -79,9 +78,9 @@ enft %>%
 
 En la librería existe una función llamada `ft_version()` que intenta adivinar la versión de la encuesta que se está utilizando. Un ejemplo, del uso de esta función lo constituye la función `ft_peri_vars()` que crea variables de tiempo como `ano`, `semestre` y `periodo`, homologando el formato durante todo el período de la encuesta y para todas las versiones.
 
-Como se mencionó antes, la `enft` es una encuesta trimestral por lo que el factor de expansión<!-- ^[Si quieres leer sobre como trabajar con datos de encuesta en R. Lee la siguiente publicación: []()] --> es trimestral. Para trabajar con los datos en frecuencia anual se debe utilizar el factor de expansión anual.
+Como se mencionó antes, la `enft_like` es una encuesta trimestral por lo que el factor de expansión<!-- ^[Si quieres leer sobre como trabajar con datos de encuesta en R. Lee la siguiente publicación: []()] --> es trimestral. Para trabajar con los datos en frecuencia anual se debe utilizar el factor de expansión anual.
 ```{r}
-enft %>% 
+enft_like %>% 
   ft_peri_vars() %>% 
   group_by(ano) %>% 
   summarise(
@@ -95,7 +94,7 @@ En el primer caso, se usa el factor trimestral, por lo que el total poblacional 
 
 Igual que en las otras librerías del proyecto `endomer`, puedes asignar y utilizar etiquetas de datos para la variables. Lea más sobre las [Etiquetas de datos en R](https://adatar-do.github.io/labeler/articles/labeler.html) aquí (En inglés)<!--  o los recursos disponibles aquí en español []() enlaces a la etiqueta `labeler` en el blog de adatar -->.
 ```{r}
-enft %>% 
+enft_like %>% 
   ft_peri_vars() %>% 
   group_by(ano, EFT_SEXO) %>% 
   summarise(n = sum(EFT_FACTOR_EXP_ANUAL)) %>% 
@@ -105,7 +104,7 @@ enft %>%
 
 Finalmente es importante mencionar que utilizando la función `ft_browse_dict()` puedes acceder a una tabla interactiva en la que se puede consultar la el diccionario de la encuesta.
 ```{r}
-ft_browse_dict()
+#ft_browse_dict()
 ```
 
 > En la página "Índice" revisa la documentación de las funciones de la librería. En especial aquellas que estén relacionadas con lo que estés trabajando. En algunos casos pudieras encontrar aclaraciones importantes sobre los datos de la encuesta.

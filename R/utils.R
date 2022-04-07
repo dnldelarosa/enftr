@@ -13,7 +13,7 @@
 #' `r lifecycle::badge('stable')`
 #' 
 #' @format [data.frame]
-"enft"
+"enft_like"
 
 
 #' Pipe operator
@@ -32,8 +32,10 @@ NULL
 
 
 ft_factor_onaplan <- function(tbl, factor_base = "EFT_FACTOR_EXP") {
+  EFT_PERIODO <- NULL
+  poblacion_onaplan <- NULL
   tbl %>%
-    dplyr::left_join(poblacion_onaplan, copy = T, by = "EFT_PERIODO") %>%
+    dplyr::left_join(enftr::poblacion_onaplan, copy = T, by = "EFT_PERIODO") %>%
     dplyr::group_by(EFT_PERIODO) %>%
     dplyr::mutate(
       factor_onaplan = !!as.name(factor_base) / 
