@@ -496,6 +496,19 @@ ft_horas_semanal <- function(tbl, min_edad = 15) {
 }
 
 
+#' Número de días trabajados a la semana por ocupación principal
+#' `r lifecycle::badge('stable')`
+#'
+#' @param tbl  [data.frame] Data.frame con los datos de la encuesta
+#'
+#' @return[data.frame] los datos suministrados en el input tbl, pero con la
+#' variable \code{dias_semana_ocupacion_principal} agregada.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' enft <- dias_semana_ocupacion_principal(enft)
+#' }
 ft_dias_semana_ocupacion_principal <- function(tbl){
     tbl %>%
         dplyr::mutate(
@@ -540,6 +553,20 @@ ft_ingreso_laboral_mensual <- function(tbl, min_edad = 15) {
 }
 
 
+#' Grupos Ramas de actividad económica
+#' `r lifecycle::badge('stable')`
+#'
+#' @param tbl [data.frame]: los datos de la ENFT.
+#' Puede ser conexión a base de datos.
+#'
+#' @return Los datos suministrados en el argumento tbl con la variables \code{grupo_rama} agregada
+#' 
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'   enft <- ft_grupo_rama(enft)
+#' }
 ft_grupo_rama <- function(tbl){
   tbl %>% 
     dplyr::mutate(
