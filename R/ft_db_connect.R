@@ -13,7 +13,7 @@
 #'   conn <- ft_db_connect()
 #' }
 ft_db_connect <- function(db_name = 'enft', ...){
-  Dmisc::db_connect(db_name = 'enft', ...)
+  Dmisc:::db_connect(db_name = 'enft', ...)
 }
 
 
