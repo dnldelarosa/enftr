@@ -25,10 +25,10 @@ Imports:
     Dmisc (>= 0.4.0),
     lubridate
 Remotes: 
-    adatar-do/labeler,
-    drdsdaniel/Dmisc
-URL: https://github.com/endomer/enftr, https://endomer-py.github.io/enftr/
-BugReports: https://github.com/endomer/enftr/issues
+    dnldelarosa/labeler@cf78c2c54908a66f399eaeb3c1f784fe8799d20f,
+    dnldelarosa/Dmisc
+URL: https://github.com/dnldelarosa/enftr, https://endomer-py.github.io/enftr/
+BugReports: https://github.com/dnldelarosa/enftr/issues
 RdMacros: lifecycle
 Suggests: 
     testthat (>= 3.0.0),
