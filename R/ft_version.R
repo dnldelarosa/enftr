@@ -1,22 +1,13 @@
-#' Identifica la versión de la encuesta en uso
-#' `r lifecycle::badge('experimental')`
-#' 
-#' @param tbl [data.frame]: Conexión a base de datos o dataframe con los datos
-#' 
-#' @return 1 si la version original de la base de datos. 2 si la version con factores regionales revisados.
-#' 
-#' @examples
-#'   \dontrun{
-#'     ft_version(enftr::enft1)
-#'     ft_version(enftr::enft2)
-#'  }
-ft_version <- function(tbl){
-  if("PERIALFA" %in% names(tbl)){
-    1
-  } else if("EFT_PERIODO" %in% names(tbl)){
-    2
-  } else {
-    stop("\n Ninguna de las variables PERIALFA o EFT_PERIODO fue encontrada en los datos.
-         \n \u00BFSon estos los datos de la ENFT?\n ")
-  }
+#' Identificar la estructura de los datos ENFT
+#'
+#' Distingue nombres de columnas, no revisiones del diccionario ni metodologias.
+#' Una tabla con ambas columnas de periodo es ambigua y se rechaza.
+#' @param tbl data.frame o tibble local.
+#' @return 1 para PERIALFA; 2 para EFT_PERIODO.
+#' @export
+ft_version <- function(tbl) {
+  ft_check_table(tbl)
+  found <- c("PERIALFA", "EFT_PERIODO") %in% names(tbl)
+  if (sum(found) != 1L) stop("Se requiere exactamente una columna de periodo: PERIALFA o EFT_PERIODO.", call. = FALSE)
+  which(found)
 }

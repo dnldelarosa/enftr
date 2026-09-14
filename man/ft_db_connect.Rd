@@ -9,7 +9,7 @@ Vea \code{Dmisc::\link[Dmisc:db_connect]{db_connect}}}
 \usage{
 ft_db_connect(db_name = "enft", ...)
 
-ft_dbConnect()
+ft_dbConnect(db_name = "enft", ...)
 }
 \arguments{
 \item{db_name}{Nombre de la base de datos}

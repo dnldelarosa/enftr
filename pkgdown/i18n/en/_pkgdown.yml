@@ -1,0 +1,17 @@
+url: https://endomer-py.github.io/enftr/en/
+lang: en
+template:
+  bootstrap: 5
+  bootswatch: flatly
+navbar:
+  structure:
+    left: [intro, reference, articles, news]
+    right: [search, github]
+  components:
+    intro:
+      text: Home
+      href: index.html
+articles:
+  - title: Guides
+    navbar: ~
+    contents: [enftr, diccionario, pobreza-monetaria, indicadores, deployment]

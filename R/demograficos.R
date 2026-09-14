@@ -8,7 +8,7 @@
 #'
 #' @param tbl [data.frame]: Conexión a base de datos o dataframe con los datos
 #'
-#' @return Los datos suministrados en el input \code{tbl} con la variable \code{ano}
+#' @return Los datos suministrados en el input \code{tbl} con la variable \code{zona}
 #'   adicionada.
 #'
 #' @export
@@ -30,19 +30,12 @@
 #' )
 #' ft_zona(enft1)
 ft_zona <- function(tbl) {
-  S1_P4 <- NULL
-  EFT_ZONA <- NULL
-  if (ft_version(tbl) == 1) {
-    tbl %>%
-      dplyr::mutate(
-        zona = S1_P4 + 1
-      )
-  } else {
-    tbl %>%
-      dplyr::mutate(
-        zona = EFT_ZONA + 1
-      )
-  }
+  column <- if (ft_version(tbl) == 1L) "S1_P4" else "EFT_ZONA"
+  ft_check_table(tbl, column)
+  value <- tbl[[column]]
+  if (!is.numeric(value) || any(!is.na(value) & !value %in% c(0, 1))) stop("Zona debe usar codigos numericos 0/1 o NA.", call. = FALSE)
+  tbl$zona <- value + 1
+  tbl
 }
 
 
@@ -187,6 +180,7 @@ ft_dominios_inferencia <- function(tbl) {
   dominios_inferencia2 <- NULL
   dominios_inferencia3 <- NULL
   tbl %>%
+    ft_peri_vars() %>%
     ft_dominios_inferencia1() %>%
     ft_dominios_inferencia2() %>%
     ft_dominios_inferencia3() %>%
@@ -196,7 +190,7 @@ ft_dominios_inferencia <- function(tbl) {
         dplyr::between(periodo, 20032, 20072) &
           dominios_inferencia2 == 1 ~ 1,
         dplyr::between(periodo, 20032, 20072) ~ dominios_inferencia2 + 2,
-        periodo >= 20081 ~ dominios_inferencia3 + 11
+        dplyr::between(periodo, 20081, 20162) ~ dominios_inferencia3 + 11
       )
     )
 }

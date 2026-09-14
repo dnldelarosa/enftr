@@ -1,46 +1,36 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/master/examples
-# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
-on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
-
 name: R-CMD-check
-
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
 jobs:
-  R-CMD-check:
-    runs-on: ${{ matrix.config.os }}
-
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
-
+  check:
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - {os: macOS-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel-1'}
-
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     env:
+      RENV_CONFIG_AUTOLOADER_ENABLED: 'false'
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      R_KEEP_PKG_SOURCE: yes
-
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: r-lib/actions/setup-pandoc@v1
-
-      - uses: r-lib/actions/setup-r@v1
+      - uses: actions/checkout@v4
         with:
-          r-version: ${{ matrix.config.r }}
-          http-user-agent: ${{ matrix.config.http-user-agent }}
+          path: enftr
+      - uses: r-lib/actions/setup-r@v2
+        with:
           use-public-rspm: true
-
-      - uses: r-lib/actions/setup-r-dependencies@v1
+      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: rcmdcheck
-
-      - uses: r-lib/actions/check-r-package@v1
+          working-directory: enftr
+          extra-packages: any::roxygen2
+          needs: check
+      - name: Check declared dictionary dependency
+        run: stopifnot(packageVersion('labeler') >= '0.11.0')
+        shell: Rscript {0}
+      - run: Rscript enftr/scripts/check-release.R
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: enftr-check-${{ matrix.os }}
+          path: artifacts/enft-release/package

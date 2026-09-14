@@ -1,251 +1,8 @@
-#' Pobreza monetaria (Metodología oficial) de la República Dominicana
-#' `r lifecycle::badge('experimental')`
-#' 
-#' Esta función utiliza los datos de la Encuesta Nacional (tradicional) de Fuerza
-#' de Trabajo (ENFT) de la República Dominicana para calcular la pobreza monetaria
-#' siguiendo la metodología oficial. 
-#' 
-#' Argumentos \code{ing_ext} y \code{remesas}: En las primeras versiones de la encuesta,
-#' las variables de ingresos del exterior y remesas venían en tablas separadas,
-#' por lo que se presentan argumentos para suministrar dichas tablas. Sin embargo,
-#' estos argumentos apuntan por defecto a la tabla principal, por lo que de tener 
-#' esta información integrada en una única tabla, se puede omitir estos argumentos.
-#' 
-#' NOTA: Por el momento, esta función solo calcula la pobreza monetaria en el período 2005-2016.
-#' A pesar de que se han publicado documentos metodológicos para el cálculo de la pobreza
-#' monetaria, la formula como tal no es pública, por lo que no se puede asegurar que los
-#' resultados sean los mismos que aquellos que se obtienen con la formula oficial.
-#' Aunque los resultados son bastante aproximados.
-#'
-#' @param tbl [data.frame]: datos de la ENFT. Puede ser conexión a base de datos.
-#' @param ing_ext [data.frame]: datos de ingresos del exterior. Vea detalles.
-#' @param remesas [data.frame]: datos de remesas. Vea detalles.
-#' @param .keep indica si se deben mantener las variables intermedias en la data. 
-#' Puede ser `TRUE` o `FALSE` (default), o un vector de characeter con las variables a mantener.
-#' @param .reuse indica si se deben reutilizar las variables intermedias que estén disponibles en la data. 
-#' Puede ser `TRUE` o `FALSE`(default). O un vector de characeter con las variables a reutilizar.
-#'
-#' @return [data.frame]: los datos del argumento `tbl` con la variable `pobreza_monetaria` agregada.
-#'   Si .keep no es `FALSE` otras variables intermedias se mantienen.
-#' 
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#'  enft <- ft_pobreza_monetaria(enft, enft_ing_ext, enft_remesas)
-#' }
-ft_pobreza_monetaria <- function(tbl, ing_ext = tbl, remesas = tbl, .keep = FALSE, .reuse = FALSE) {
-  ft_ing_pc_pobreza_monetaria(tbl, ing_ext, remesas, .keep, .reuse) %>% 
-    dplyr::left_join(enftr::lineas_oficial_zona, copy = TRUE) %>% 
-    dplyr::mutate(
-      pobreza_monetaria = dplyr::case_when(
-        ing_pc_pobreza_monetaria <= lindigencia ~ 1,
-        ing_pc_pobreza_monetaria <= lpobreza ~ 2,
-        TRUE ~ 3
-      )
-    )
-}
-
-
-#' Ingreso total hogares para el cálculo de la pobreza monetaria
-#' `r lifecycle::badge('experimental')`
-#'
-#' @inheritParams ft_pobreza_monetaria
-#'
-#' @return [data.frame]: los datos del argumento `tbl` con la variable `ing_total_pobreza_monetaria` agregada.
-#' 
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' enft <- ft_pobreza_monetaria(enft, enft_ing_ext, enft_remesas)
-#' }
-ft_ing_total_pobreza_monetaria <- function(tbl, ing_ext = tbl, remesas = tbl, .keep = FALSE, .reuse = FALSE){
-ing_ocup_prin <- NULL
-ing_comisiones <- NULL
-ing_propinas <- NULL
-ing_horas_extras <- NULL
-ing_vacaciones <- NULL
-ing_dividendos <- NULL
-ing_bonificaciones <- NULL
-ing_regalia_pascual <- NULL
-ing_utilidades_empresariales <- NULL
-ing_beneficios_marginales <- NULL
-ing_especie_alimentos <- NULL
-ing_especie_viviendas <- NULL
-ing_especie_transporte <- NULL
-ing_especie_vestido <- NULL
-ing_especie_otros <- NULL
-ing_especie_celulares <- NULL
-ing_ocup_secun <- NULL
-ing_pension_anual <- NULL
-ing_pension_jubilacion <- NULL
-ing_intereses_dividendo <- NULL
-ing_interes_anual <- NULL
-ing_alqui_renta_propiedades <- NULL
-ing_alquiler_anual <- NULL
-ing_remesas_nac <- NULL
-ing_remesas_anual <- NULL
-ing_ayuda_gobierno <- NULL
-ing_gobierno_anual <- NULL
-ing_especie_ayuda_ong <- NULL
-ing_especie_auto <- NULL
-ing_ext_pension <- NULL
-ing_ext_intereses_alquiler <- NULL
-ing_regalos_ext <- NULL
-ing_imputado_vivienda_propia <- NULL
-ing_remesas_ext <- NULL
-  ingresos <- c(
-    'ing_ocup_prin',
-    'ing_comisiones',
-    'ing_propinas',
-    'ing_horas_extras',
-    'ing_vacaciones',
-    'ing_dividendos',
-    'ing_bonificaciones',
-    'ing_regalia_pascual',
-    'ing_utilidades_empresariales',
-    'ing_beneficios_marginales',
-    'ing_especie_alimentos',
-    'ing_especie_viviendas',
-    'ing_especie_transporte',
-    'ing_especie_vestido',
-    'ing_especie_otros',
-    'ing_especie_celulares',
-    'ing_ocup_secun',
-    'ing_pension_anual',
-    'ing_pension_jubilacion',
-    'ing_intereses_dividendo',
-    'ing_interes_anual',
-    'ing_alqui_renta_propiedades',
-    'ing_alquiler_anual',
-    'ing_remesas_nac',
-    'ing_remesas_anual',
-    'ing_ayuda_gobierno',
-    'ing_gobierno_anual',
-    'ing_especie_ayuda_ong',
-    'ing_especie_auto',
-    'ing_ext_pension',
-    'ing_ext_intereses_alquiler',
-    'ing_regalos_ext',
-    'ing_imputado_vivienda_propia',
-    'ing_remesas_ext'
-  )
-  if(is.logical(.reuse)){
-    if(.reuse){
-      for (ingreso in ingresos) {
-        if(ingreso %in% dplyr::tbl_vars(tbl)){
-          ingresos <- ingresos[ingresos != ingreso]
-        }
-      }
-    }
-  } else {
-    for (ingreso in .reuse) {
-      ingresos <- ingresos[ingresos != ingreso]
-    }
-  }
-  cli::cli_progress_bar("Calculando ingresos faltantes", total = length(ingresos))
-  for (ingreso in ingresos) {
-    if(ingreso %in% c(
-      "ing_ext_pension", 
-      "ing_ext_intereses_alquiler",
-      "ing_regalos_ext"
-      )){
-      tbl <- get(paste0("ft_", ingreso))(tbl, ing_ext)
-    } else if(ingreso == "ing_remesas_ext"){
-      tbl <- get(paste0("ft_", ingreso))(tbl, remesas, ing_ext)
-    } else {
-      tbl <- get(paste0("ft_", ingreso))(tbl)
-    }
-    cli::cli_progress_update()
-  }
-  tbl <- dplyr::mutate(
-    tbl,
-    ing_total_pobreza_monetaria = 
-      ing_ocup_prin + 
-      ing_comisiones +
-      ing_propinas +
-      ing_horas_extras +
-      ing_vacaciones +
-      ing_dividendos +
-      ing_bonificaciones + 
-      ing_regalia_pascual + 
-      ing_utilidades_empresariales +
-      ing_beneficios_marginales +
-      ing_especie_alimentos +           #2014
-      ing_especie_viviendas + 
-      ing_especie_transporte +
-      ing_especie_vestido +
-      ing_especie_otros +
-      ing_especie_celulares +
-      ing_ocup_secun +
-      ing_pension_jubilacion +
-      ing_pension_anual +
-      ing_intereses_dividendo +
-      ing_interes_anual +
-      ing_alqui_renta_propiedades +
-      ing_alquiler_anual +
-      ing_remesas_nac +
-      ing_remesas_anual +
-      ing_ayuda_gobierno +           #2014
-      ing_gobierno_anual +
-      ing_especie_ayuda_ong +        #2014
-      ing_especie_auto +             #2014, 2015, 2016
-      ing_imputado_vivienda_propia + #2005, 2014, 2015
-      ing_ext_pension +              #2009, 2011
-      ing_ext_intereses_alquiler +
-      ing_regalos_ext +
-      ing_remesas_ext
-  )
-  if(is.logical(.keep)){
-    if(.keep){
-      ingresos <- c()
-    }
-  } else {
-    for (ingreso in .keep) {
-      ingresos <- ingresos[ingresos != ingreso]
-    }
-  }
-  tbl %>% 
-    dplyr::select(-dplyr::all_of(ingresos)) %>% 
-    dplyr::mutate(
-      ing_total_pobreza_monetaria = dplyr::case_when(
-        periodo >= 20051 ~ ing_total_pobreza_monetaria
-      )
-    )
-  }
-
-#' Ingreso per cápita de los hogares para el cálculo de la pobreza monetaria
-#' `r lifecycle::badge('experimental')`
-#'
-#' @inheritParams ft_ing_total_pobreza_monetaria
-#'
-#' @return [data.frame] los datos del argumento `tbl` con la columna `ing_pc_pobreza_monetaria`
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#'  enft <- ft_ing_pc_pobreza_monetaria(enft, enft_ing_ext, enft_remesas)
-#' }
-ft_ing_pc_pobreza_monetaria <- function(tbl, ing_ext, remesas, .keep = FALSE, .reuse = FALSE){
-  EFT_PERIODO <- NULL
-  EFT_VIVIENDA <- NULL
-  EFT_HOGAR <- NULL
-  ing_total_pobreza_monetaria <- NULL
-  tbl <- ft_ing_total_pobreza_monetaria(tbl, ing_ext, remesas, .keep, .reuse) %>% 
-    dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR) %>% 
-    dplyr::mutate(ing_pc_pobreza_monetaria = sum(ing_total_pobreza_monetaria, na.rm = TRUE) / dplyr::n()) %>% 
-    dplyr::ungroup()
-  cli::cli_progress_done()
-  tbl
-}
-
-
 #' Ingreso monetario laboral por salario ocupación principal para el cálculo de la pobreza monetaria
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT. 
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_ocup_prin` agregrada.
 #' @export
@@ -273,7 +30,7 @@ ft_ing_ocup_prin <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_ocup_secun` agregrada.
 #' @export
@@ -306,7 +63,7 @@ ft_ing_ocup_secun <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_comisiones` agregrada.
 #' @export
@@ -330,7 +87,7 @@ ft_ing_comisiones <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl  [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_propinas` agregrada.
 #' @export
@@ -354,7 +111,7 @@ ft_ing_propinas <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_horas_extras` agregrada.
 #' @export
@@ -378,7 +135,7 @@ ft_ing_horas_extras <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_vacaciones` agregrada.
 #' @export
@@ -402,7 +159,7 @@ ft_ing_vacaciones <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_dividendos` agregrada.
 #' @export
@@ -472,7 +229,7 @@ ft_ing_regalia_pascual <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_utilidades_empresariales` agregrada.
 #' @export
@@ -519,7 +276,7 @@ ft_ing_beneficios_marginales <- function(tbl) {
 #' `r lifecycle::badge('experimental')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_especie_alimentos` agregrada.
 #' @export
@@ -543,7 +300,7 @@ ft_ing_especie_alimentos <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_especie_vivienda` agregrada.
 #' @export
@@ -567,7 +324,7 @@ ft_ing_especie_viviendas <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_especie_transporte` agregrada.
 #' @export
@@ -591,7 +348,7 @@ ft_ing_especie_transporte <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_especie_vestido` agregrada.
 #' @export
@@ -615,7 +372,7 @@ ft_ing_especie_vestido <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_especie_celulares` agregrada.
 #' @export
@@ -639,7 +396,7 @@ ft_ing_especie_celulares <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_especie_otros` agregrada.
 #' @export
@@ -663,7 +420,7 @@ ft_ing_especie_otros <- function(tbl) {
 #' `r lifecycle::badge('experimental')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_especie_auto` agregrada.
 #' @export
@@ -695,23 +452,14 @@ ft_ing_especie_auto <- function(tbl) {
 #' enft <- ft_ing_imputado_vivienda_propia(enft)
 #' }
 ft_ing_imputado_vivienda_propia <- function(tbl) {
-  EFT_PERIODO <- NULL
-  EFT_VIVIENDA  <- NULL
-  EFT_HOGAR <- NULL
-  EFT_MONTO_PROBABLE_ALQ <- NULL
-  . <- NULL
-  ing_imputado_vivienda_propia <- NULL
-  tbl %>%
-    dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR) %>%
-    dplyr::summarise(ing_imputado_vivienda_propia = mean(EFT_MONTO_PROBABLE_ALQ, na.rm = T)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(EFT_PARENTESCO_CON_JEFE = 1) %>%
-    dplyr::left_join(
-      tbl, 
-      .,
-      by = c("EFT_PERIODO", "EFT_VIVIENDA", "EFT_HOGAR", "EFT_PARENTESCO_CON_JEFE")
-      ) %>%
-    dplyr::mutate(ing_imputado_vivienda_propia = dplyr::if_else(is.na(ing_imputado_vivienda_propia), 0, ing_imputado_vivienda_propia))
+  canonical <- ft_income_table(tbl, TRUE)
+  ft_numeric(canonical, c("EFT_MONTO_PROBABLE_ALQ", "EFT_PARENTESCO_CON_JEFE"))
+  ids <- ft_key_id(canonical, ft_keys[1:3])
+  head <- canonical$EFT_PARENTESCO_CON_JEFE == 1
+  if (anyNA(head) || any(vapply(split(head, ids), sum, numeric(1)) != 1)) stop("Se requiere exactamente un jefe por hogar.", call. = FALSE)
+  value <- if (nrow(canonical)) stats::ave(canonical$EFT_MONTO_PROBABLE_ALQ, ids, FUN = function(x) if (all(is.na(x))) NA_real_ else mean(x, na.rm = TRUE)) else numeric()
+  tbl$ing_imputado_vivienda_propia <- ifelse(head, value, 0)
+  tbl
 }
 
 
@@ -719,7 +467,7 @@ ft_ing_imputado_vivienda_propia <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_alqui_renta_propiedades` agregrada.
 #' @export
@@ -741,7 +489,7 @@ ft_ing_alqui_renta_propiedades <- function(tbl) {
 #' `r lifecycle::badge('experimental')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #' @param ing_ext [data.frame] el data.frame con los datos de la tabla de ingresos externos.
 #' Vea detalles en la función \link{ft_pobreza_monetaria}.
 #'
@@ -752,44 +500,8 @@ ft_ing_alqui_renta_propiedades <- function(tbl) {
 #' \dontrun{
 #' enft <- ft_ing_ext_intereses_alquiler(enft, ing_ext)
 #' }
-ft_ing_ext_intereses_alquiler <- function(tbl, ing_ext) {
-  EFT_PERIODO <- NULL
-  EFT_VIVIENDA <- NULL
-  EFT_HOGAR <- NULL
-  EFT_MIEMBRO <- NULL
-  EFT_MONEDA_ING_INTERES_MES <- NULL
-  EFT_MONTO_ING_INTERES_MES <- NULL
-  value <- NULL
-  cod_moneda2 <- NULL
-  ing_ext_intereses_alquiler <- NULL
-  . <- NULL
-  tipo_cambio <- NULL
-  tipo_de_cambio <- enftr::tdc_oficial
-  
-  ing_ext %>%
-    dplyr::select(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO, EFT_MONEDA_ING_INTERES_MES, EFT_MONTO_ING_INTERES_MES) %>%
-    dplyr::filter(!is.na(EFT_MONTO_ING_INTERES_MES)) %>%
-    dplyr::filter(EFT_MONTO_ING_INTERES_MES > 0) %>%
-    dplyr::left_join(
-      tipo_de_cambio %>%
-        dplyr::filter(!is.na(value)) %>%
-        dplyr::filter(lubridate::month(date) %in% c(3, 9)) %>%
-        dplyr::mutate(EFT_PERIODO = paste0(lubridate::semester(date), "/", lubridate::year(date))) %>%
-        dplyr::select(EFT_PERIODO, EFT_MONEDA_ING_INTERES_MES = cod_moneda2, tipo_cambio = value),
-      copy = TRUE,
-      by = c("EFT_PERIODO", "EFT_MONEDA_ING_INTERES_MES")
-    ) %>%
-    dplyr::mutate(ing_ext_intereses_alquiler = EFT_MONTO_ING_INTERES_MES * tipo_cambio) %>%
-    dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO) %>%
-    dplyr::summarise(ing_ext_intereses_alquiler = sum(ing_ext_intereses_alquiler, na.rm = T)) %>%
-    dplyr::left_join(
-      tbl, 
-      .,
-      copy = TRUE,
-      by = c("EFT_PERIODO", "EFT_VIVIENDA", "EFT_HOGAR", "EFT_MIEMBRO")
-      ) %>%
-    dplyr::mutate(ing_ext_intereses_alquiler = dplyr::if_else(is.na(ing_ext_intereses_alquiler), 0, ing_ext_intereses_alquiler)) %>%
-    dplyr::ungroup()
+ft_ing_ext_intereses_alquiler <- function(tbl, ing_ext = tbl) {
+  ft_external_income(tbl, ing_ext, "EFT_MONTO_ING_INTERES_MES", "EFT_MONEDA_ING_INTERES_MES", "ing_ext_intereses_alquiler")
 }
 
 
@@ -797,7 +509,7 @@ ft_ing_ext_intereses_alquiler <- function(tbl, ing_ext) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_intereses_dividendo` agregrada.
 #' @export
@@ -821,7 +533,7 @@ ft_ing_intereses_dividendo <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_pension_jubilacion` agregrada.
 #' @export
@@ -845,7 +557,7 @@ ft_ing_pension_jubilacion <- function(tbl) {
 #' `r lifecycle::badge('experimental')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #' @param ing_ext [data.frame] el data.frame con los datos de la tabla de ingresos externos.
 #' Vea detalles en la función \link{ft_pobreza_monetaria}.
 #'
@@ -856,43 +568,8 @@ ft_ing_pension_jubilacion <- function(tbl) {
 #' \dontrun{
 #' enft <- ft_ing_ext_pension(enft, ing_ext)
 #' }
-ft_ing_ext_pension <- function(tbl, ing_ext) {
-  EFT_PERIODO <- NULL
-  EFT_VIVIENDA <- NULL
-  EFT_HOGAR <- NULL
-  EFT_MIEMBRO <- NULL
-  EFT_MONEDA_ING_PENSION_MES <- NULL
-  EFT_MONTO_ING_PENSION_MES <- NULL
-  value <- NULL
-  cod_moneda2 <- NULL
-  ing_ext_pension <- NULL
-  tipo_cambio <- NULL
-  . <- NULL
-    tipo_de_cambio <- enftr::tdc_oficial
-  ing_ext %>%
-    dplyr::select(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO, EFT_MONEDA_ING_PENSION_MES, EFT_MONTO_ING_PENSION_MES) %>%
-    dplyr::filter(!is.na(EFT_MONTO_ING_PENSION_MES)) %>%
-    dplyr::filter(EFT_MONTO_ING_PENSION_MES > 0) %>%
-    dplyr::left_join(
-      tipo_de_cambio %>%
-        dplyr::filter(!is.na(value)) %>%
-        dplyr::filter(lubridate::month(date) %in% c(3, 9)) %>%
-        dplyr::mutate(EFT_PERIODO = paste0(lubridate::semester(date), "/", lubridate::year(date))) %>%
-        dplyr::select(EFT_PERIODO, EFT_MONEDA_ING_PENSION_MES = cod_moneda2, tipo_cambio = value),
-      copy = TRUE,
-      by = c("EFT_PERIODO", "EFT_MONEDA_ING_PENSION_MES")
-    ) %>%
-    dplyr::mutate(ing_ext_pension = EFT_MONTO_ING_PENSION_MES * tipo_cambio) %>%
-    dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO) %>%
-    dplyr::summarise(ing_ext_pension = sum(ing_ext_pension, na.rm = T)) %>%
-    dplyr::left_join(
-      tbl,
-      .,
-      copy = TRUE,
-      by = c("EFT_PERIODO", "EFT_VIVIENDA", "EFT_HOGAR", "EFT_MIEMBRO")
-      ) %>%
-    dplyr::mutate(ing_ext_pension = dplyr::if_else(is.na(ing_ext_pension), 0, ing_ext_pension)) %>%
-    dplyr::ungroup()
+ft_ing_ext_pension <- function(tbl, ing_ext = tbl) {
+  ft_external_income(tbl, ing_ext, "EFT_MONTO_ING_PENSION_MES", "EFT_MONEDA_ING_PENSION_MES", "ing_ext_pension")
 }
 
 
@@ -900,7 +577,7 @@ ft_ing_ext_pension <- function(tbl, ing_ext) {
 #' `r lifecycle::badge('experimental')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_ayuda_gobierno` agregrada.
 #' @export
@@ -920,7 +597,7 @@ ft_ing_ayuda_gobierno <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_remesas_nac` agregrada.
 #' @export
@@ -944,7 +621,7 @@ ft_ing_remesas_nac <- function(tbl) {
 #' `r lifecycle::badge('experimental')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #' @param remesas [data.frame] el data.frame con los datos de la tabla de remesas.
 #' Vea detalles en la función \link{ft_pobreza_monetaria}.
 #' @param ing_ext [data.frame] el data.frame con los datos de la tabla de ingresos externos.
@@ -957,181 +634,15 @@ ft_ing_remesas_nac <- function(tbl) {
 #' \dontrun{
 #' enft <- ft_ing_remesas_ext(enft, remesas, ing_ext)
 #' }
-ft_ing_remesas_ext <- function(tbl, remesas, ing_ext) {
-  remesas_a <- NULL
-  remesas_b <- NULL
-  tbl %>%
-    dplyr::left_join(
-      ft_ing_remesas_ext_20001(ing_ext),
-      by = c("EFT_PERIODO", "EFT_VIVIENDA", "EFT_HOGAR", "EFT_MIEMBRO")
-    ) %>%
-    dplyr::left_join(
-      ft_ing_remesas_ext_20002_20162(remesas),
-      by = c("EFT_PERIODO", "EFT_VIVIENDA", "EFT_HOGAR", "EFT_MIEMBRO")
-    ) %>%
-    dplyr::mutate(
-      ing_remesas_ext = dplyr::if_else(is.na(remesas_a), 0, remesas_a) +
-        dplyr::if_else(is.na(remesas_b), 0, remesas_b)
-    )
+ft_ing_remesas_ext <- function(tbl, remesas = tbl, ing_ext = tbl) {
+  ft_remittance_income(tbl, remesas, ing_ext)
 }
-
-#' Ingreso monetario no laboral por remesas del exterior 2000/1 para el cálculo de la pobreza monetaria
-#' `r lifecycle::badge('experimental')`
-#'
-#' @param ing_ext [data.frame] el data.frame con los datos de la tabla de ingresos externos.
-#' Vea detalles en la función \link{ft_pobreza_monetaria}.
-#'
-#' @return [data.frame] los datos del argumento `ing_ext` con la columna `remesas_a` agregrada.
-ft_ing_remesas_ext_20001 <- function(ing_ext) {
-  EFT_PERIODO <- NULL
-  EFT_VIVIENDA <- NULL
-  EFT_HOGAR <- NULL
-  EFT_MIEMBRO <- NULL
-  EFT_RECIBIO_ING_REMESA_SEM <- NULL
-  EFT_FREC_ING_REMESA_SEM <- NULL
-  EFT_MONTO_ING_REMESA_SEM <- NULL
-  EFT_MONEDA_ING_REMESA_SEM <- NULL
-  value <- NULL
-  cod_moneda2 <- NULL
-  remesas <- NULL
-  tipo_cambio <- NULL
-    tipo_de_cambio <- enftr::tdc_oficial
-  ing_ext %>%
-    dplyr::select(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO, EFT_RECIBIO_ING_REMESA_SEM, EFT_FREC_ING_REMESA_SEM, EFT_MONTO_ING_REMESA_SEM, EFT_MONEDA_ING_REMESA_SEM) %>%
-    dplyr::filter(EFT_PERIODO == "1/2000", EFT_RECIBIO_ING_REMESA_SEM == 1) %>%
-    dplyr::left_join(
-      tipo_de_cambio %>%
-        dplyr::filter(date == as.Date("2000-03-31")) %>%
-        dplyr::select(tipo_cambio = value, cod_moneda2) %>%
-        dplyr::mutate(EFT_PERIODO = "1/2000") %>%
-        tidyr::drop_na(),
-      by = c("EFT_PERIODO", "EFT_MONEDA_ING_REMESA_SEM" = "cod_moneda2"),
-      copy = TRUE
-    ) %>%
-    dplyr::mutate(remesas = EFT_MONTO_ING_REMESA_SEM * tipo_cambio / 6) %>%
-    dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO) %>%
-    dplyr::summarise(remesas_a = sum(remesas, na.rm = TRUE)) %>% 
-    dplyr::ungroup()
-}
-
-#' Ingreso monetario no laboral por remesas del exterior 2000/2 a 2016/2 para el cálculo de la pobreza monetaria
-#' `r lifecycle::badge('experimental')`
-#'
-#' @param remesas [data.frame] el data.frame con los datos de la tabla de remesas.
-#' Vea detalles en la función \link{ft_pobreza_monetaria}.
-#'
-#' @return [data.frame] los datos del argumento `remesas` con la columna `remesas_b` agregrada.
-ft_ing_remesas_ext_20002_20162 <- function(remesas) {
-  periodo <- NULL
-  EFT_RECIBIO_REMESA <- NULL
-  EFT_PERIODO <- NULL
-  EFT_VIVIENDA <- NULL
-  EFT_HOGAR <- NULL
-  EFT_MIEMBRO <- NULL
-  name <- NULL
-  monto <- NULL
-  moneda <- NULL
-  frecuencia <- NULL
-  ano <- NULL
-  mes <- NULL
-  cod_moneda2 <- NULL
-  value <- NULL
-    tipo_de_cambio <- enftr::tdc_oficial
-    ipc <- enftr::ipc_oficial
-  
-  remesas <- remesas %>%
-    ft_peri_vars() %>%
-    dplyr::filter(
-      periodo >= 20002,
-      EFT_RECIBIO_REMESA == 1
-      )
-  
-
-  remesas %>%
-    dplyr::select(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO, dplyr::starts_with("EFT_MONTO")) %>%
-    tidyr::pivot_longer(dplyr::starts_with("EFT_MONTO"), values_to = "monto", names_prefix = "EFT_MONTO_") %>%
-    dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO, name) %>% 
-    dplyr::mutate(monto = dplyr::first(monto)) %>% 
-    dplyr::distinct() %>% 
-    dplyr::ungroup() %>% 
-    dplyr::left_join(
-      remesas %>%
-        dplyr::select(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO, dplyr::starts_with("EFT_MONEDA")) %>%
-        tidyr::pivot_longer(dplyr::starts_with("EFT_MONEDA"), values_to = "moneda", names_prefix = "EFT_MONEDA_") %>%
-        dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO, name) %>% 
-        dplyr::mutate(moneda = dplyr::first(moneda)) %>% 
-        dplyr::distinct() %>% 
-        dplyr::ungroup(),
-      by = c("EFT_PERIODO", "EFT_VIVIENDA", "EFT_HOGAR", "EFT_MIEMBRO", "name")
-      ) %>%
-    dplyr::left_join(
-      remesas %>%
-        dplyr::select(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO, dplyr::starts_with("EFT_FRECUENCIA")) %>%
-        tidyr::pivot_longer(dplyr::starts_with("EFT_FRECUENCIA"), values_to = "frecuencia", names_prefix = "EFT_FRECUENCIA_") %>%
-        dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO, name) %>% 
-        dplyr::mutate(frecuencia = dplyr::first(frecuencia)) %>% 
-        dplyr::distinct() %>% 
-        dplyr::ungroup(),
-      by = c("EFT_PERIODO", "EFT_VIVIENDA", "EFT_HOGAR", "EFT_MIEMBRO", "name")
-      ) %>%
-    dplyr::filter(!is.na(monto), monto > 0) %>% 
-    ft_peri_vars() %>% 
-    dplyr::mutate(
-      mes = dplyr::case_when(
-        semestre == 1 & name == "SEP" ~ 3,
-        semestre == 1 & name == "AGO" ~ 2,
-        semestre == 1 & name == "JUL" ~ 1,
-        semestre == 1 & name == "PER4" ~ 12,
-        semestre == 1 & name == "PER5" ~ 11,
-        semestre == 1 & name == "PER6" ~ 10,
-        semestre == 2 & name == "SEP" ~ 9,
-        semestre == 2 & name == "AGO" ~ 8,
-        semestre == 2 & name == "JUL" ~ 7,
-        semestre == 2 & name == "PER4" ~ 6,
-        semestre == 2 & name == "PER5" ~ 5,
-        semestre == 2 & name == "PER6" ~ 4
-      )
-    ) %>%
-    dplyr::left_join(
-      tipo_de_cambio %>%
-        dplyr::mutate(ano = lubridate::year(date), mes = lubridate::month(date)) %>%
-        dplyr::select(ano, mes, moneda = cod_moneda2, tipo_cambio = value),
-      copy = TRUE,
-      by = c("moneda", "ano", "mes")
-    ) %>%
-    dplyr::left_join(
-      ipc %>%
-        dplyr::filter(lubridate::month(date) %in% c(3, 9)) %>%
-        dplyr::mutate(periodo = as.double(paste0(lubridate::year(date), lubridate::semester(date)))) %>%
-        dplyr::select(periodo, ipc_mes_encuesta = ipc),
-      copy = TRUE,
-      by = "periodo"
-    ) %>%
-    dplyr::left_join(
-      ipc %>%
-        dplyr::mutate(ano = lubridate::year(date), mes = lubridate::month(date)) %>%
-        dplyr::select(-date),
-      copy = TRUE,
-      by = c("ano", "mes")
-    ) %>%
-    dplyr::mutate(
-      remesas = dplyr::case_when(
-        periodo == 20001 ~ as.double(NA),
-        periodo <= 20071 ~ (monto * frecuencia * tipo_cambio * (ipc_mes_encuesta / ipc)) / 12,
-        periodo >= 20072 ~  monto * tipo_cambio * (ipc_mes_encuesta / ipc) / 6
-      ) 
-      ) %>%
-    dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO) %>%
-    dplyr::summarise(remesas_b = sum(remesas, na.rm = T)) %>%
-    dplyr::ungroup()
-}
-
 
 #' Ingreso monetario no laboral anual por pensión para el cálculo de pobreza monetaria
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_pension_anual` agregrada.
 #' @export
@@ -1155,7 +666,7 @@ ft_ing_pension_anual <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_interes_anual` agregrada.
 #' @export
@@ -1178,7 +689,7 @@ ft_ing_interes_anual <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_alquiler_anual` agregrada.
 #' @export
@@ -1201,7 +712,7 @@ ft_ing_alquiler_anual <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_remesas_anual` agregrada.
 #' @export
@@ -1224,7 +735,7 @@ ft_ing_remesas_anual <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_ocasion_anual` agregrada.
 #'
@@ -1242,7 +753,7 @@ ft_ing_ocasion_anual <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_gobierno_anual` agregrada.
 #' @export
@@ -1261,7 +772,7 @@ ft_ing_gobierno_anual <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_otros_anual` agregrada.
 #'
@@ -1305,7 +816,7 @@ ft_ing_otros_anual <- function(tbl) {
 #' `r lifecycle::badge('experimental')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_especie_ayuda_ong` agregrada.
 #' @export
@@ -1375,7 +886,7 @@ ft_ing_especie_ayuda_ong <- function(tbl) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_ocasional_nac` agregrada.
 #'
@@ -1397,7 +908,7 @@ ft_ing_ocasional_nac <- function(tbl) {
 #' `r lifecycle::badge('experimental')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #' @param ing_ext  [data.frame] el data.frame con los datos de la tabla de ingresos externos.
 #' Vea detalles en la función \link{ft_pobreza_monetaria}.
 #'
@@ -1453,7 +964,7 @@ ft_ing_ocasional_ext <- function(tbl, ing_ext) {
 #' `r lifecycle::badge('experimental')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #' @param ing_ext [data.frame] el data.frame con los datos de la tabla de ingresos externos.
 #' Vea detalles en la función \link{ft_pobreza_monetaria}.
 #'
@@ -1464,22 +975,8 @@ ft_ing_ocasional_ext <- function(tbl, ing_ext) {
 #' \dontrun{
 #' enft <- ft_ing_regalos_ext(enft, ing_ext)
 #' }
-ft_ing_regalos_ext <- function(tbl, ing_ext) {
-  EFT_PERIODO <- NULL
-  EFT_VIVIENDA <- NULL
-  EFT_HOGAR <- NULL
-  EFT_MIEMBRO <- NULL
-  EFT_MONTO_EQUIV_REGALO <- NULL
-  ing_regalos_ext <- NULL
-  tbl %>% 
-    dplyr::left_join(
-  ing_ext %>%
-    dplyr::group_by(EFT_PERIODO, EFT_VIVIENDA, EFT_HOGAR, EFT_MIEMBRO) %>%
-    dplyr::summarise(ing_regalos_ext = sum(EFT_MONTO_EQUIV_REGALO, na.rm = TRUE)) %>%
-    dplyr::ungroup(),
-  by = c("EFT_PERIODO", "EFT_VIVIENDA", "EFT_HOGAR", "EFT_MIEMBRO")
-    ) %>% 
-    dplyr::mutate(ing_regalos_ext = dplyr::if_else(is.na(ing_regalos_ext), 0, ing_regalos_ext))
+ft_ing_regalos_ext <- function(tbl, ing_ext = tbl) {
+  ft_external_income(tbl, ing_ext, "EFT_MONTO_EQUIV_REGALO", NULL, "ing_regalos_ext")
 }
 
 
@@ -1487,7 +984,7 @@ ft_ing_regalos_ext <- function(tbl, ing_ext) {
 #' `r lifecycle::badge('stable')`
 #'
 #' @param tbl [data.frame] el data.frame con los datos de la ENFT.
-#' Puede ser conexión a base de datos.
+#' Use datos locales; materialice previamente las consultas remotas.
 #'
 #' @return [data.frame] los datos del argumento `tbl` con la columna `ing_otros` agregrada.
 #'
@@ -1504,131 +1001,3 @@ ft_ing_otros <- function(tbl) {
       TRUE ~ 0
     ))
 }
-
-
-##ft_ing_total_oficial <- function(tbl, ing_ext, remesas) {
-##
-##  # Ingresos convencionales
-##  tbl <- ft_ing_ocup_prin(tbl)
-##  tbl <- ft_ing_ocup_secun(tbl)
-##  tbl <- ft_ing_alqui_renta_propiedades(tbl)
-##  tbl <- ft_ing_ext_intereses_alquiler(tbl, ing_ext, metodo = metodo)
-##  tbl <- ft_ing_intereses_dividendo(tbl)
-##  tbl <- ft_ing_pension_jubilacion(tbl)
-##  tbl <- ft_ing_ext_pension(tbl, ing_ext, metodo = metodo)
-##  tbl <- ft_ing_ayuda_gobierno(tbl)
-##  tbl <- ft_ing_remesas_nac(tbl)
-##  tbl <- ft_ing_remesas_ext(tbl, remesas, ing_ext, metodo = metodo)
-##  tbl <- ft_ing_ocasional_nac(tbl)
-##  tbl <- ft_ing_ocasional_ext(tbl, ing_ext, metodo = metodo)
-##  tbl <- ft_ing_regalos_ext(tbl, ing_ext)
-##  tbl <- ft_ing_otros(tbl)
-##  # Ingresos adicionales
-##  tbl <- ft_ing_comisiones(tbl)
-##  tbl <- ft_ing_propinas(tbl)
-##  tbl <- ft_ing_horas_extras(tbl)
-##  tbl <- ft_ing_vacaciones(tbl)
-##  tbl <- ft_ing_dividendos(tbl)
-##  tbl <- ft_ing_bonificaciones(tbl)
-##  tbl <- ft_ing_regalia_pascual(tbl)
-##  tbl <- ft_ing_utilidades_empresariales(tbl)
-##  tbl <- ft_ing_beneficios_marginales(tbl)
-##  tbl <- ft_ing_especie_alimentos(tbl)
-##  tbl <- ft_ing_especie_viviendas(tbl)
-##  tbl <- ft_ing_especie_celulares(tbl)
-##  tbl <- ft_ing_especie_transporte(tbl)
-##  tbl <- ft_ing_especie_vestido(tbl)
-##  tbl <- ft_ing_especie_otros(tbl)
-##  tbl <- ft_ing_especie_auto(tbl)
-##  tbl <- ft_ing_especie_ayuda_ong(tbl)
-##  tbl <- ft_ing_adicionales(tbl)
-##
-##  tbl <- ft_ing_imputado_vivienda_propia(tbl)
-##
-##  tbl <- tbl %>%
-##    dplyr::left_join(
-##      ipc_oficial %>%
-##        filter(lubridate::month(date) %in% c(4, 10)) %>%
-##        dplyr::mutate(
-##          semestre = lubridate::semester(date),
-##          ano = lubridate::year(date)
-##        ) %>%
-##        dplyr::select(-date) %>%
-##        dplyr::rename("ipc_mes_encuesta" = "ipc")
-##    ) %>%
-##    dplyr::left_join(
-##      ipc_oficial %>%
-##        filter(lubridate::month(date) %in% c(3, 9)) %>%
-##        dplyr::mutate(
-##          semestre = lubridate::semester(date),
-##          ano = lubridate::year(date)
-##        ) %>%
-##        dplyr::select(-date) %>%
-##        dplyr::rename("ipc_mes_anterior_encuesta" = "ipc")
-##    )
-##
-##  tbl <- tbl %>%
-##    dplyr::mutate(
-##      dplyr::across(
-##        dplyr::all_of(index),
-##        ~.x * (ipc_mes_anterior_encuesta/ipc_mes_encuesta)
-##      )
-##    )
-##
-##  tbl <- tbl %>%
-##    dplyr::mutate(
-##      ing_convencional_pobreza = 
-##        ing_ocup_prin + 
-##        ing_ocup_secun +
-##        ing_alqui_renta_propiedades + 
-##        ing_ext_intereses_alquiler + 
-##        ing_intereses_dividendo +
-##        ing_pension_jubilacion + 
-##        ing_ext_pension + 
-##        ing_ayuda_gobierno +
-##        ing_remesas_nac + 
-##        ing_remesas_ext + 
-##        ing_ocasional_nac +
-##        ing_ocasional_ext + 
-##        tidyr::replace_na(ing_regalos_ext, 0) + 
-##        ing_otros
-##    )
-##  tbl <- tbl %>%
-##    dplyr::mutate(
-##      ing_adicional_pobreza = 
-##        ing_comisiones + 
-##        ing_propinas +
-##        ing_horas_extras + 
-##        ing_vacaciones + 
-##        ing_dividendos +
-##        ing_bonificaciones + 
-##        ing_regalia_pascual +
-##        ing_utilidades_empresariales + 
-##        ing_beneficios_marginales +
-##        ing_especie_alimentos + 
-##        ing_especie_viviendas + 
-##        ing_especie_transporte +
-##        ing_especie_vestido + 
-##        ing_especie_celulares + 
-##        ing_especie_otros + 
-##        ing_especie_auto +
-##        ing_adicionales + 
-##        ing_especie_ayuda_ong
-##    )
-##  tbl <- tbl %>%
-##    dplyr::mutate(
-##      ing_total_oficial = ing_convencional_pobreza +
-##        ing_imputado_vivienda_propia +
-##        ing_adicional_pobreza,
-##      ing_total_recomendado = ing_total_oficial -
-##        ing_ocasional_nac - ing_ocasional_ext
-##    )
-##  if (metodo == "m") {
-##    tbl <- tbl %>%
-##      dplyr::mutate(
-##        ing_total_recomendado = ing_total_recomendado - ing_especie_ayuda_ong -
-##          ing_regalos_ext - ing_otros
-##      )
-##  }
-##  tbl
-##}

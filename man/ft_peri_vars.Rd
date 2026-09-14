@@ -5,8 +5,7 @@
 \alias{ft_compute_peri_vars}
 \alias{ft_compute_ano}
 \alias{ft_ano}
-\title{Divide la variable EFT_PERIODO en varias variables útiles
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}}
+\title{Separar y validar el periodo semestral de la ENFT}
 \usage{
 ft_peri_vars(tbl, rm = FALSE, ano = TRUE, semestre = TRUE, periodo = TRUE)
 
@@ -23,39 +22,20 @@ ft_compute_ano(tbl)
 ft_ano(tbl)
 }
 \arguments{
-\item{tbl}{\link{data.frame}: Conexión a base de datos o dataframe con los datos}
+\item{tbl}{data.frame o tibble local.}
 
-\item{rm}{\link{logical}: Si es TRUE, elimina la variable EFT_PERIODO}
+\item{rm}{Retirar la columna de periodo original.}
 
-\item{ano}{\link{logical}: Si es TRUE, agrega la variable \code{ano}}
-
-\item{semestre}{\link{logical}: Si es TRUE, agrega la variable \code{semestre}}
-
-\item{periodo}{\link{logical}: Si es TRUE, agrega la variable \code{periodo}}
+\item{ano, semestre, periodo}{Agregar o actualizar cada salida solicitada.}
 }
 \value{
-Los datos suministrados en el input \code{tbl} con las variables \code{semestre}
-\code{ano} y \code{periodo} adicionadas.
+Tabla original con las salidas solicitadas, conservando orden y filas.
 }
 \description{
-Divide la variable EFT_PERIODO en varias variables útiles
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
-}
-\details{
-Las distintas versiones de la base de datos tradicional pueden contener
-formatos distintos para la variable perialfa (2000/1 vs 1/2000). Sin embargo,
-esta función está diseñada para trabajar con este problema aunque tengas
-estas bases en un mismo archivo.
-
-La variable \code{periodo} es diferente a la variable \code{EFT_PERIODO},
-ya que esta primera está construida de la forma \code{ano+semestre}. Lo que
-la convierte en una variable numérica, y que trae con ello una mucho mayor
-facilidad de manipulación. Además de que se hace consistete para todo el
-período analizado.
+Acepta S/AAAA, AAAA/S o AAAAS; reconoce EFT_PERIODO o PERIALFA.
+Valida cada fila incluso cuando se combinan formatos. No modifica la columna
+original salvo que rm sea TRUE. Solo recalcula las salidas solicitadas.
 }
 \examples{
-\dontrun{
-  (enft <- data.frame(EFT_PERIODO = "1/2016"))
-  ft_peri_vars(enft)
-}
+ft_peri_vars(data.frame(EFT_PERIODO = c("1/2005", "2006/2", "20161")))
 }

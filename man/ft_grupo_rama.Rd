@@ -20,6 +20,6 @@ Grupos Ramas de actividad económica
 }
 \examples{
 \dontrun{
-  enft <- ft_grupo_rama(enft)
+enft <- ft_grupo_rama(enft)
 }
 }

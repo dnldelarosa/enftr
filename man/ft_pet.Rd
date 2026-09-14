@@ -22,6 +22,6 @@ Población en edad de trabajar (PET)
 }
 \examples{
 \dontrun{
-  enft <- ft_pet(enft)
+enft <- ft_pet(enft)
 }
 }

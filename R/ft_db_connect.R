@@ -13,13 +13,13 @@
 #'   conn <- ft_db_connect()
 #' }
 ft_db_connect <- function(db_name = 'enft', ...){
-  Dmisc:::db_connect(db_name = 'enft', ...)
+  Dmisc::db_connect(db_name = db_name, ...)
 }
 
 
 #' @rdname ft_db_connect
 #' @export
-ft_dbConnect <- function(){
+ft_dbConnect <- function(db_name = 'enft', ...){
   lifecycle::deprecate_warn('0.1.0', 'ft_dbConnect()', 'ft_db_connect()')
-  ft_db_connect()
+  ft_db_connect(db_name = db_name, ...)
 }

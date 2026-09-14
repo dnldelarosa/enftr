@@ -50,6 +50,7 @@ ft_anos_educacion <- function(tbl) {
 #'  enft <- ft_alfabeta(enft)
 #' }
 ft_alfabeta <- function(tbl, min_edad = 15){
+  ft_check_age(min_edad)
   EFT_ALFABETISMO <- NULL
   tbl %>%
     dplyr::mutate(

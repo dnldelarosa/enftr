@@ -14,7 +14,7 @@ ft_compute_zona(tbl)
 \item{tbl}{\link{data.frame}: Conexión a base de datos o dataframe con los datos}
 }
 \value{
-Los datos suministrados en el input \code{tbl} con la variable \code{ano}
+Los datos suministrados en el input \code{tbl} con la variable \code{zona}
 adicionada.
 }
 \description{

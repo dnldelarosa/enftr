@@ -9,7 +9,7 @@ ft_ing_ocasional_ext(tbl, ing_ext)
 }
 \arguments{
 \item{tbl}{\link{data.frame} el data.frame con los datos de la ENFT.
-Puede ser conexión a base de datos.}
+Use datos locales; materialice previamente las consultas remotas.}
 
 \item{ing_ext}{\link{data.frame} el data.frame con los datos de la tabla de ingresos externos.
 Vea detalles en la función \link{ft_pobreza_monetaria}.}

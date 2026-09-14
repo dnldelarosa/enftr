@@ -1,0 +1,41 @@
+---
+title: "Dictionaries and revisions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dictionaries and revisions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Bundled revision `baseline-1` registers the 120 available definitions. It does not claim full variable coverage or historical applicability. Date selection requires documented intervals; an unknown or ambiguous date raises an error.
+
+## Partial changes between editions
+
+Each edition resolves a complete dictionary. The registry reuses unchanged definitions and adds only changed definitions, retaining stable identifiers and hashes. Changing one label does not duplicate the other 119 definitions. Registered revisions are immutable: create a draft and register a new version to edit them.
+
+Dates in this example are invented API demonstrations, not documented ENFT questionnaire changes. The caller owns the SQLite registry.
+
+## Identified gap in the source dictionary
+
+`S3B_P10` linked to the nonexistent `EFT_SE_MATRICULO` definition. The author's question wording is preserved; no category codes are invented. Details are stored in `metadata.unresolved_legacy_links`. Legacy accents and Unicode escapes have also been normalized. Historical compatibility warnings remain available when labeling.
+
+Survey labels are retained in their original Spanish in both documentation editions.
+
+## Runnable example
+```{r}
+library(enftr)
+x <- enft_like
+con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+base <- ft_dict()
+primera <- ft_register_dict(con, labeler::dict_draft(base), "example-1",
+  valid_from = "2005-01-01", valid_to = "2005-12-31")
+borrador <- labeler::dict_draft(primera)
+borrador$EFT_ZONA$label <- "Zona de residencia"
+segunda <- ft_register_dict(con, borrador, "example-2", parent_version = "example-1",
+  valid_from = "2006-01-01", valid_to = "2006-12-31")
+labeler::dict_revision(ft_dict(con = con, at = "2006-06-01"))$version
+a <- labeler::dict_revision(primera)$variable_refs
+b <- labeler::dict_revision(segunda)$variable_refs
+sum(vapply(names(a), function(k) a[[k]]$definition_hash == b[[k]]$definition_hash, logical(1)))
+DBI::dbDisconnect(con)
+```

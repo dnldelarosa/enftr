@@ -1,6 +1,6 @@
 Package: enftr
 Title: Encuesta Nacional (Tradicional) De Fuerza de Trabajo (ENFT) en R
-Version: 0.8.0
+Version: 0.9.0
 Authors@R: 
     c(person(given = "Daniel E.",
            family = "de la Rosa",
@@ -10,34 +10,34 @@ Authors@R:
            role = "cph"))
 Description: Contiene funciones útiles para trabajar con la Encuesta Nacional (tradicional)
     de Fuerza de Trabajo (ENFT) en R, como las etiquetas de datos y cálculos adicionales
-    como el de pobreza o ICV, entre muchos más.
+    de ingresos, indicadores laborales y pobreza histórica de 2005 a 2016.
+    Incluye diccionarios versionados y ejemplos enteramente sintéticos.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.3.2
 Imports: 
     dplyr,
-    stringr,
     magrittr,
-    labeler,
+    labeler (>= 0.11.0),
     lifecycle,
-    Dmisc,
-    tidyr,
-    cli,
+    Dmisc (>= 0.4.0),
     lubridate
 Remotes: 
     adatar-do/labeler,
     drdsdaniel/Dmisc
-URL: https://github.com/endomer/enftr
+URL: https://github.com/endomer/enftr, https://endomer-py.github.io/enftr/
 BugReports: https://github.com/endomer/enftr/issues
 RdMacros: lifecycle
 Suggests: 
     testthat (>= 3.0.0),
-    covr,
+    DBI,
+    RSQLite,
+    jsonlite,
     knitr,
     rmarkdown
 Depends: 
-    R (>= 3.5)
+    R (>= 4.1.0)
 VignetteBuilder: knitr
 Config/testthat/edition: 3

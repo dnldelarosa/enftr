@@ -1,0 +1,25 @@
+La entrega separa el código instalable, las dependencias propias, la documentación y la evidencia de validación. Requiere R >= 4.1, labeler >= 0.11.0 y Dmisc >= 0.4.0; Python >= 3.9, pandas >= 1.5, numpy >= 1.21 y labelerpy >= 0.2.1. Las demás dependencias declaradas deben estar instaladas.
+
+## Instalación desde la entrega
+
+```r
+install.packages("Dmisc_0.4.0.zip", repos = NULL, type = "win.binary")
+install.packages("labeler_0.11.0.zip", repos = NULL, type = "win.binary")
+install.packages("enftr_0.9.0.zip", repos = NULL, type = "win.binary")
+```
+
+En otros sistemas use los archivos fuente `.tar.gz` con `type = "source"`.
+
+```text
+python -m pip install labelerpy-0.2.1-py3-none-any.whl endompy-0.4.0-py3-none-any.whl
+```
+
+## Sitios estáticos
+
+Publique el contenido de `sites/r` para pkgdown y de `sites/python` para Python, conservando la subcarpeta `en`. La página inicial está en español. El selector de idioma lleva a la página equivalente. Compruebe la ruta base y los enlaces canónicos antes de publicar bajo otro dominio. La compilación y la entrega local no publican nada.
+
+Desde el workspace ENDOM se reproducen las verificaciones con `Rscript enftr/scripts/check-release.R`, `Rscript enftr/scripts/build-docs.R` y `python endompy/scripts/build-docs.py`. Los scripts de auditoría de sitios comprueban páginas equivalentes, recursos, enlaces, anclas y búsqueda. `python -m pytest endompy/tests` ejecuta también la regresión de ENCFT.
+
+## Datos y límites
+
+El paquete y la entrega pública incluyen únicamente ejemplos inventados. Los respaldos originales de desarrollo no forman parte de la entrega. Una revisión de diccionario sin fechas no debe seleccionarse por fecha. La falta de equivalencia certificada con el programa oficial de ENFT debe mantenerse visible en cualquier publicación del método.

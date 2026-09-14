@@ -5,11 +5,11 @@
 \title{Ingreso monetario no laboral por pensión del exterior para el cálculo de la pobreza monetaria
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}}
 \usage{
-ft_ing_ext_pension(tbl, ing_ext)
+ft_ing_ext_pension(tbl, ing_ext = tbl)
 }
 \arguments{
 \item{tbl}{\link{data.frame} el data.frame con los datos de la ENFT.
-Puede ser conexión a base de datos.}
+Use datos locales; materialice previamente las consultas remotas.}
 
 \item{ing_ext}{\link{data.frame} el data.frame con los datos de la tabla de ingresos externos.
 Vea detalles en la función \link{ft_pobreza_monetaria}.}

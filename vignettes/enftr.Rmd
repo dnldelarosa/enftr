@@ -1,110 +1,29 @@
 ---
-title: "Encuesta Nacional (tradicional) de Fuerza de Trabajo (enft_like)"
+title: "Primeros pasos con la ENFT"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Encuesta Nacional (tradicional) de Fuerza de Trabajo (enft_like)}
+  %\VignetteIndexEntry{Primeros pasos con la ENFT}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
+`enftr 0.9.0` y `endompy.enftr 0.4.0` procesan la encuesta tradicional semestral. La ENCFT continua utiliza otro módulo y otros contratos.
 
-La Encuesta Nacional de Fuerza de Trabajo está concebida para ofrecer informaciones generales sobre el mercado de trabajo. Dentro de sus principales objetivos se encuentran:
+El ejemplo contiene 72 personas completamente inventadas, agrupadas en 24 hogares-período de 2000 a 2016. No permite estimar cifras nacionales. La generación usa constantes y nombres de variables, sin valores de personas encuestadas.
 
-* Evaluar la evolución del mercado de trabajo por medio de la estimación de los principales indicadores para poblaciones específicas, tales como, Tasa Global de Participación, Ocupación, Desocupación, Cesantía e Inactividad, según diversas desagregaciones.
-* Conocer los ingresos promedios generados por la participación de los ocupados en dicho mercado, así como la jornada promedio trabajada.
-* Estudiar la relación entre los resultados de las informaciones del mercado de trabajo y el comportamiento de las actividades económicas que conforman el Producto Interno Bruto (PIB).
-* Permitir la elaboración de estudios de comparabilidad internacional de las estadísticas laborales del país con otros de características similares. 
+## Estructura y períodos
 
-A continuación, se presentan una tabla resumen con algunos detalles de interés acerca de la encuesta. Para mayor especificidad consulta el [Documento metodológico](https://github.com/endomer/enft_liker/tree/master/Files) y el [Boletín informativo No. I de la enft_like](https://github.com/endomer/enft_liker/tree/master/Files).
+`EFT_PERIODO` acepta `1/2005`, `2005/1` y `20051`, incluso mezclados por fila. `PERIALFA` identifica la estructura antigua. Solo la separación de período y la zona admiten ambas estructuras; los demás cálculos requieren las columnas `EFT_` que aparecen en la referencia. El paquete no infiere equivalencias entre cuestionarios.
 
-|Especificaciones del Diseño					              |Encuesta Nacional (tradicional) de Fuerza de Trabajo (enft_like)                                                                                               |
-|---------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-|Población objeto de estudio					              |Hogares residentes en las viviendas no colectivas o particulares ocupadas de la República Dominicana.                                                     |
-|Cobertura geográfica					                      |Todo el territorio nacional, incluyendo las islas aledañas.                                                                                               |
-|Marco censal de referencia					                |VIII Censo Nacional de Población y Vivienda 2002 y actualización cartográfica de la Provincia de Santo Domingo en el año 2006.                            |
-|Distribución geográfica de la población            |62.5% se asienta en el área urbana y 37.5% en la zona rural.										                                                                           |
-|Tipo de muestreo					                          |Bietápico.	                                                       														                                                             |
-|Variable de diseño					                        |Tasa de desocupación abierta.                                              														                                                   |
-|Nivel de confianza					                        |95% de confianza                                                   															                                                         |
-|Máximo error esperado					                    |Error de 1%                                               															                                                                   |
-|Tasa de no respuesta mínima esperada		            |Tasa de no respuesta de 18%                               															                                                                   |
-|Dominio de estimación o inferencia estadística			|Se diseñó para el Distrito Nacional, provincias principales de cada región de planificación y las principales provincias turísticas del país.             |
-|Estratificación geográfica					                |47 estratos. 8 réplicas o submuestras por estrato, se usan 4 en cada semestre. Zona geográfica (provincias o regiones de planificación) y zona de residencia (urbana y rural) reportada por Censo Nacional 2002.|
-|Asignación o distribución de la muestra por dominio|Asignación óptima y proporcional a la población por zona de residencia en cada dominio de estudio.                                                        |
-|Tamaño de muestra					                        |Al año 19,904 viviendas en 1968 UPM’s. Cada semestre se selecciona de forma independiente 9,952 viviendas en 984 UPM’s.                                   |
-|Selección de la muestra                            |Las áreas de supervisión censal se definieron como las unidades primarias de muestreo (UPM) y se seleccionaron con probabilidad proporcional al tamaño (PPT). Las unidades secundarias de muestro (USM) son las viviendas y se seleccionaron con igual probabilidad 12 viviendas en el área urbana y 8 en la rural.|
-|Traslape o solapamiento de viviendas					      |La muestra tendrá un 75% de viviendas comunes en dos años consecutivos. Se rotan 2 réplicas, una cada semestre, para un 25% de las viviendas en el año (4,976 viviendas). Se seleccionan muestras independientes para los semestres de un mismo año.|
-|Levantamiento en campo					                    |Levantamiento semestral, primera semana de abril y de octubre.|
-|Período de referencia de estimación					      |A mediados de la última semana de marzo y de septiembre|
-|Factores de expansión					                    |1,968 factores al año, 984 factores por semestre, calculados en base a: muestra efectiva, tasa de respuesta, actualizaciones cartográficas de las UPM’s y las proyecciones de ONAPLAN realizadas en el año 1999.|
-|Nomenclaturas					                            |a) Clasificación Internacional Uniforme de Ocupaciones (CIUO-88). b) Clasificación Industrial Internacional Uniforme de todas las Actividades Económicas (CIIU, Rev.3).|
-|Divulgación de resultados					                |Semestral|
-Table: **Documento metodológico de la Encuesta Nacional (tradicional) de Fuerza de Trabajo (enft_like)**
+La versión de estructura, la revisión del diccionario y el identificador metodológico de pobreza son conceptos independientes. La función de versión reconoce columnas; no fecha el cuestionario.
 
-### ¿Dónde puedo conseguir los datos de la encuesta? {-}
+Trabaje con tablas locales y conserve las columnas requeridas. Materialice las consultas antes de calcular. Las funciones conservan filas y orden; Python también conserva el índice, incluso cuando se repite.
 
-Para conseguir los datos de la encuesta es necesario hacer una solicitud vía correo electrónico a la Oficina de Libre Acceso a la Información Pública del Banco Central de la República Dominicana.
-
-
-## Algunos cruces básicos y detalles finales utilizando la librería
-
-Para el procesamiento de la encuesta puedes utilizar las funciones suministradas de la forma convencional o utilizar operadores pipe como ` %>%` o `|>` si tiene [R >= 4.1](https://cran.r-project.org/doc/manuals/r-release/NEWS.html).
-
-
+## Ejemplo ejecutable
 ```{r}
 library(enftr)
-library(dplyr)
+x <- enft_like
+resultado <- ft_peri_vars(x)
+resultado <- ft_ocupado(resultado)
+head(resultado[c("EFT_PERIODO", "ano", "semestre", "ocupado")])
 ```
-
-Para mostrar algunas funcionalidades de la librería utilizaremos un pequeño `data.frame` que simulará los datos de la encuesta. El archivo tiene la siguiente estructura.
-```{r}
-head(enft_like)
-```
-Existen varias versiones de la base de datos de la encuesta. La versión más reciente corresponde a una versión con corrección de factores regionales para replicar las últimas estimaciones poblacionales de la Oficina Nacional de Estadísticas (ONE). Esta versión de la encuesta lleva los nombres de las variables precedidas por el patrón "EFT" además de que replica los valores anuales que se muestran a continuación.
-```{r}
-enft_like %>% 
-  ft_peri_vars() %>% 
-  group_by(ano) %>% 
-  summarise(
-    poblacion = sum(EFT_FACTOR_EXP_ANUAL)
-  )
-```
-
-En la librería existe una función llamada `ft_version()` que intenta adivinar la versión de la encuesta que se está utilizando. Un ejemplo, del uso de esta función lo constituye la función `ft_peri_vars()` que crea variables de tiempo como `ano`, `semestre` y `periodo`, homologando el formato durante todo el período de la encuesta y para todas las versiones.
-
-Como se mencionó antes, la `enft_like` es una encuesta trimestral por lo que el factor de expansión<!-- ^[Si quieres leer sobre como trabajar con datos de encuesta en R. Lee la siguiente publicación: []()] --> es trimestral. Para trabajar con los datos en frecuencia anual se debe utilizar el factor de expansión anual.
-```{r}
-enft_like %>% 
-  ft_peri_vars() %>% 
-  group_by(ano) %>% 
-  summarise(
-    sum(EFT_FACTOR_EXP),
-    sum(EFT_FACTOR_EXP_ANUAL)
-  ) %>% 
-  tail()
-```
-
-En el primer caso, se usa el factor trimestral, por lo que el total poblacional está resultando 2 veces mayor, mientras que en el segundo caso obtenemos un total representativo de 10 millones aproximadamente.
-
-Igual que en las otras librerías del proyecto `endomer`, puedes asignar y utilizar etiquetas de datos para la variables. Lea más sobre las [Etiquetas de datos en R](https://adatar-do.github.io/labeler/articles/labeler.html) aquí (En inglés)<!--  o los recursos disponibles aquí en español []() enlaces a la etiqueta `labeler` en el blog de adatar -->.
-```{r}
-enft_like %>% 
-  ft_peri_vars() %>% 
-  group_by(ano, EFT_SEXO) %>% 
-  summarise(n = sum(EFT_FACTOR_EXP_ANUAL)) %>% 
-  ft_use_labels() %>% 
-  tail()
-```
-
-Finalmente es importante mencionar que utilizando la función `ft_browse_dict()` puedes acceder a una tabla interactiva en la que se puede consultar la el diccionario de la encuesta.
-```{r}
-#ft_browse_dict()
-```
-
-> En la página "Índice" revisa la documentación de las funciones de la librería. En especial aquellas que estén relacionadas con lo que estés trabajando. En algunos casos pudieras encontrar aclaraciones importantes sobre los datos de la encuesta.

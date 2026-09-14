@@ -22,6 +22,6 @@ Población ocupada
 }
 \examples{
 \dontrun{
- enft <- ft_ocupado(enft)
+enft <- ft_ocupado(enft)
 }
 }

@@ -12,3 +12,10 @@
 ^contributors\.csv$
 ^contributors\.R$
 ^Files$
+
+^scripts$
+^renv$
+^renv\.lock$
+^\.Rprofile$
+^\.git$
+^DEPLOYMENT\.md$

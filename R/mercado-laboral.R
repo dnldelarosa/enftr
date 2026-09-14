@@ -13,6 +13,7 @@
 #' enft <- ft_pet(enft)
 #' }
 ft_pet <- function(tbl, min_edad = 15) {
+  ft_check_age(min_edad)
   tbl %>%
     dplyr::mutate(
       pet = dplyr::case_when(
@@ -78,6 +79,7 @@ ft_desempleo_abierto <- function(tbl, min_edad = 15) {
     ft_ocupado(min_edad) %>%
     dplyr::mutate(
       desempleo_abierto = dplyr::case_when(
+        ocupado == 1 ~ 0,
         pet == 1 & EFT_BUSCO_TRAB_SEM_ANT == 1 ~ 1,
         pet == 1 & EFT_BUSCO_TRAB_MES_ANT == 1 ~ 1,
         ocupado == 1 ~ 0
@@ -185,6 +187,7 @@ ft_desempleo_ampliado <- function(tbl, min_edad = 15) {
     ft_desempleo_abierto(min_edad) %>%
     dplyr::mutate(
       desempleo_ampliado = dplyr::case_when(
+        ocupado == 1 ~ 0,
         desempleo_abierto == 1 ~ 1,
         EFT_TIENE_COND_JORNADA == 1 ~ 1,
         ocupado == 1 ~ 0

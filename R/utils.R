@@ -9,10 +9,14 @@
 "dict"
 
 
-#' Conjunto de datos que simula la encuesta de fuerza de trabajo
+#' Ejemplo enteramente inventado de la ENFT
 #' `r lifecycle::badge('stable')`
 #' 
-#' @format [data.frame]
+#' Contiene 72 personas inventadas y 24 hogares-periodo en 12 semestres entre
+#' 2000 y 2016. Se genera con constantes y nombres de variables, sin datos
+#' de personas encuestadas. No sirve para estimar indicadores nacionales.
+#' @format data.frame de 72 filas y 114 columnas EFT_.
+#' @source Generador reproducible incluido en scripts/create-synthetic.py del repositorio.
 "enft_like"
 
 

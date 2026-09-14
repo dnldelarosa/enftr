@@ -9,7 +9,7 @@ ft_ing_pension_jubilacion(tbl)
 }
 \arguments{
 \item{tbl}{\link{data.frame} el data.frame con los datos de la ENFT.
-Puede ser conexión a base de datos.}
+Use datos locales; materialice previamente las consultas remotas.}
 }
 \value{
 \link{data.frame} los datos del argumento \code{tbl} con la columna \code{ing_pension_jubilacion} agregrada.

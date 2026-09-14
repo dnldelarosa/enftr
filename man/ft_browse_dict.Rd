@@ -2,25 +2,18 @@
 % Please edit documentation in R/ft_Labels.R
 \name{ft_browse_dict}
 \alias{ft_browse_dict}
-\title{Navegar el diccionario de la base de datos
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}}
+\title{Consultar el diccionario ENFT}
 \usage{
-ft_browse_dict(dict = enftr::dict, ...)
+ft_browse_dict(dict = NULL, ...)
 }
 \arguments{
-\item{dict}{\link{list} diccionario de la base de datos}
+\item{dict}{Diccionario opcional; por defecto la revisión incluida.}
 
-\item{...}{Otros argumentos pasados a \code{labeler::\link[labeler:browse_dict]{browse_dict}}}
+\item{...}{Argumentos adicionales para labeler::browse_dict.}
 }
 \value{
-widget html interactivo con el diccionario de la encuesta
+Tabla o widget interactivo según los argumentos de labeler.
 }
 \description{
-Navegar el diccionario de la base de datos
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-}
-\examples{
-\dontrun{
-ft_browse_dict()
-}
+Consultar el diccionario ENFT
 }
